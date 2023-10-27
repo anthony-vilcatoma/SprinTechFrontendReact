@@ -1,0 +1,117 @@
+import React, { useState } from "react";
+
+export function LoginFormPage() {
+    const [formData, setFormData] = useState({
+        username: "",
+        password: ""
+    });
+
+    const handleFormSubmit = async (event) => {
+        event.preventDefault();
+
+        try {
+            const response = await fetch("http://localhost:8000/api/token/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                // La solicitud fue exitosa, puedes manejar la respuesta aquí
+                const data = await response.json();
+
+                // Guardar el token de acceso en localStorage
+                localStorage.setItem("access_token", data.access_token);
+                // Guardar el token de actualización en localStorage
+                localStorage.setItem("refresh_token", data.refresh_token);
+            } else {
+                // La solicitud falló, manejar el error aquí
+                console.error("Error al iniciar sesión");
+            }
+        } catch (error) {
+            console.error("Error al procesar la solicitud:", error);
+        }
+    };
+
+    // un evento representa todo cambio en html(input,click etc)
+    //event contiene información sobre el evento, como el tipo de evento (cambio, clic, etc.)
+    const handleInputChange = (event) => {
+        //event.target para acceder a las propiedades y valores específicos del elemento que causó el evento.
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+    return (
+        <section className="flex flex-col md:flex-row-reverse h-screen items-center bg-white">
+            <div className="bg-indigo-600 hidden lg:block w-full md:w-1/2 xl:w-3/5 h-screen">
+                <img src="https://source.unsplash.com/random" alt="" className="w-full h-full object-cover" />
+            </div>
+
+            <div className="bg-white w-full md:max-w-md lg:max-w-full md:mx-auto md:mx-0 md:w-1/2 xl:w-1/3 h-screen px-6 lg:px-16 xl:px-12 flex items-center justify-center">
+                <div className="w-full h-100">
+                    <h1 className="text-xl md:text-2xl font-bold leading-tight mt-12 mb-2">Sign In</h1>
+                    <p>
+                        No tienes una cuenta? <a href="#" className="text-blue-500 font-semibold">Sign Up</a>
+                    </p>
+                    <form className="mt-6" onSubmit={handleFormSubmit}>
+                        <div>
+                            <label className="block text-gray-700">Correo Electrónico</label>
+                            <input
+                                type="email"
+                                name="username"
+                                id="email"
+                                placeholder="Ingresa tu correo electrónico"
+                                className="w-full px-4 py-3 rounded-lg bg-gray-200 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none"
+                                autoFocus
+                                autoComplete="email"
+                                required
+                                value={formData.username}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+
+                        <div className="mt-4">
+                            <label className="block text-gray-700">Contraseña</label>
+                            <input
+                                type="password"
+                                name="password"
+                                id="password"
+                                placeholder="Ingresa tu contraseña"
+                                minLength="6"
+                                className="w-full px-4 py-3 rounded-lg bg-gray-200 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none"
+                                required
+                                value={formData.password}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+
+                        <div className="flex justify-between mt-3">
+                            <div className="inline-flex items-center">
+                                <label className="relative flex cursor-pointer items-center rounded-full p-3" htmlFor="login" data-ripple-dark="true">
+                                    {/* Resto del código para el checkbox */}
+                                </label>
+                                {/* Resto del código para el enlace de "Recuérdame" */}
+                            </div>
+
+                            <a href="#" className="text-sm mt-3 font-semibold text-gray-700 hover:text-blue-700 focus:text-blue-700">
+                                ¿Olvidaste tu contraseña?
+                            </a>
+                        </div>
+
+                        <button type="submit" className="w-full block bg-indigo-500 hover:bg-indigo-400 focus:bg-indigo-400 text-white font-semibold rounded-lg px-4 py-3 mt-6">
+                            Iniciar Sesión
+                        </button>
+                    </form>
+
+                    <hr className="my-6 border-gray-300 w-full" />
+
+                    <p className="mt-8">
+                        ¿Necesitas una cuenta? <a href="#" className="text-blue-500 hover:text-blue-700 font-semibold">Crea una cuenta</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+    );
+}
