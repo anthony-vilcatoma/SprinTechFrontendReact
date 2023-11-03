@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 
 export function LoginFormPage() {
     const [formData, setFormData] = useState({
-        username: "",
+        email: "",
         password: ""
     });
 
@@ -10,7 +10,7 @@ export function LoginFormPage() {
         event.preventDefault();
 
         try {
-            const response = await fetch("http://localhost:8000/api/token/", {
+            const response = await fetch("http://localhost:8080/api/v1/auth/authenticate", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -21,14 +21,11 @@ export function LoginFormPage() {
             if (response.ok) {
                 // La solicitud fue exitosa, puedes manejar la respuesta aquí
                 const data = await response.json();
-
+                console.log(data)
                 // Guardar el token de acceso en localStorage
                 localStorage.setItem("access_token", data.access_token);
                 // Guardar el token de actualización en localStorage
                 localStorage.setItem("refresh_token", data.refresh_token);
-            } else {
-                // La solicitud falló, manejar el error aquí
-                console.error("Error al iniciar sesión");
             }
         } catch (error) {
             console.error("Error al procesar la solicitud:", error);
@@ -60,7 +57,7 @@ export function LoginFormPage() {
                             <label className="block text-gray-700">Correo Electrónico</label>
                             <input
                                 type="email"
-                                name="username"
+                                name="email"
                                 id="email"
                                 placeholder="Ingresa tu correo electrónico"
                                 className="w-full px-4 py-3 rounded-lg bg-gray-200 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none"

@@ -2,6 +2,8 @@ import { Routes, Route, BrowserRouter,Navigate } from 'react-router-dom';
 import { LoginFormPage } from './pages/LoginFormPage';
 import { HomePage } from './pages/HomePage';
 import { ServicePage } from './pages/ServicePage';
+import { TicketSupportPage } from './pages/TicketSuportPage';
+import { AnswerSuportPage } from './pages/AnswerSuportPage';
 
 
 // Esta función verifica si el usuario está autenticado(tiene su token)
@@ -28,8 +30,9 @@ function App() {
         <Route path="/login" element={<LoginFormPage />} />
         <Route
           path="/service"
-          element={isAuthenticated() ? <ServicePage /> : <Navigate to="/login" />}
-        />
+          element={isAuthenticated() ? <ServicePage /> : <Navigate to="/login" />} />
+        <Route  path="/support" element={isAuthenticated() ? <TicketSupportPage/> : <Navigate to="/login"  />}/>
+        <Route path="/atenttion" element={isAuthenticated() ? <AnswerSuportPage/> : <Navigate to="/login" />}/>
       </Routes>
     </BrowserRouter>
   );
