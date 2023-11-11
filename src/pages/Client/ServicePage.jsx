@@ -1,19 +1,97 @@
-import { LayaoutDashboard } from '../components/LayaoutDashboard'
+import { useEffect } from 'react';
+import { LayaoutDashboard } from '../../components/LayaoutDashboard'
+import { getUserLocation } from '../../assets/js/userLocation';
+import icon from '../../assets/images/iconPersonMap.png'
 export function ServicePage() {
+
+    //definimos algunos lugares estaticos (cordenadas)
+    const ubications = [{ lat: -11.994802815418084, lng: -76.85871465369739 },
+        { lat: -11.997802815418084, lng: -76.86271465369739 },
+        { lat: -11.994302815418084, lng: -76.86221465369739 },
+        { lat: -11.996802815418084, lng: -76.85971465369739 },
+        { lat: -11.993802815418084, lng: -76.86371465369739 }]
+    useEffect(() => {
+
+        //traemos nuestra ubicacion y lo almacenamos en la variable location
+        getUserLocation()
+            .then(location => {
+                // definimos la funcion del mapa
+                window.initMap =  () => {
+
+                    //creamos una variable la cual sera el centro donde se mostrara el mapa al inicio( con las cordenadas de mi ubicacion)
+                    const centro = location
+
+                    // es un objeto que sirve para mostrar informacion adicional en los marcadores
+                    const infoWindow = new google.maps.InfoWindow();
+
+                    // Inicializamos el mapa con su centro
+                    const map = new google.maps.Map(document.getElementById("map"), {
+                        zoom: 16,
+                        center: centro,
+                    });
+
+                    const iconSize = new google.maps.Size(35, 40); // Ajustamos el tamaño del mercador(iconPersonMap.png)
+                    
+                    // Creamos un marcador que muestre el iconPersonMap el cual nos dira nuestra ubicacion
+                    const marker = new google.maps.Marker({
+                        position: centro,
+                        map: map,
+                        title: "",
+                        icon: {
+                            url: icon,
+                            scaledSize: iconSize,
+                        },
+                    });
+                    
+                    //enviamos una informacion con el objeto infdwindow!
+                    infoWindow.setContent('Este eres tu!');
+                    infoWindow.open(map, marker);
+
+                    //cremos marcadores para cada ubicacion de los lugares staticos definidos anteriormente.
+                    ubications.forEach(element => {
+                        // Añadimos un marcador con su lugar especifico de cada lugar
+                        const marker = new google.maps.Marker({
+                            position: element,
+                            map: map,
+                            title: "",
+                            
+                        });
+                        // Añadimos un evento click para ver informacion adicional del marcador creado.
+                        marker.addListener('click', () => {
+                            infoWindow.setContent('This is Tecsup!');
+                            infoWindow.open(map, marker);
+                        });
+                    });
+                    
+
+
+
+                };
+
+                
+                // Cargar el script de la API de Google Maps
+                const script = document.createElement("script");
+                script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBihRqZC1ca4ienBNShbR6ZtNPoLxkrntU&callback=initMap&v=weekly`;
+                script.defer = true;
+                document.head.appendChild(script);
+
+                // Liberar recursos al desmontar el componente
+                return () => {
+                    document.head.removeChild(script);
+                };
+            })
+
+
+    }, []); 
+
     return (
         <LayaoutDashboard>
             <div className="map-form max-w-screen-lg bg-white flex flex-row w-8/12 mx-auto mb-48 mt-24 rounded-2xl shadow-2xl">
                 <div className="w-6/12 h-full ">
-                    <iframe
-                        className="rounded-l-2xl"
-                        src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d9832.408323112193!2d-76.95937684708271!3d-12.043947109649546!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2spe!4v1697691012877!5m2!1ses-419!2spe"
-                        width="100%"
-                        height="100%"
-                        style={{ border: "0" }}
-                        allowFullScreen
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                    />
+                    <div className="bg-gray-100 rounded-l-2xl h-full w-full" id='map'>
+
+                    </div>
+
                 </div>
                 <div className="w-6/12 	">
                     <form action="">

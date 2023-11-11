@@ -1,10 +1,17 @@
-import { LayaoutDashboard } from "../components/LayaoutDashboard";
+import { LayaoutDashboard } from "../../components/LayaoutDashboard";
 import { useEffect, useState } from "react";
+// useParams sirve para obtener cualquier parametro enviado por url
+import { useParams,useNavigate } from "react-router-dom";
+import { getTicket, createAnswer,getUserInformation } from '../../apis/Admin/TicketApi';
+
 export function AnswerSuportPage(){
+    const { id } = useParams();
+    const navigate = useNavigate()
+
 
     const [formData,setFormData]=useState({
-        ticket_support:0,
-        help_desk:0,
+        ticket_support:parseInt(id, 10),
+        help_desk:null,
         title: "",
         answer:"",
         date: new Date().toISOString().split('T')[0], // Obtener la fecha actual en formato YYYY-MM-DD
@@ -19,34 +26,71 @@ export function AnswerSuportPage(){
         date_ticket:"",
         issue:"",
         description:"",
-        nReclamo:0,
+        nReclamo:id,
     })
+
+
+    const submitAnswer = async (event) => {
+        event.preventDefault();
+      
+        try {
+          // Enviar la respuesta
+          const response = await createAnswer(formData);
+      
+          if (response) {
+            // La solicitud fue exitosa, puedes manejar la respuesta aquí
+            console.log(response);
+            navigate('/supportList');
+          } else {
+            console.log(response.error);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      };
 
 
 
     const handleInputChange = (event) =>{
         const {name,value} = event.target
-        setFormData({...setFormData,[name]:value});
+        setFormData({...formData,[name]:value});
+        console.log(formData)
+
     }
 
-    useEffect(()=>{
-        fetch("http://localhost:8000/api/admin/requesTicket/2")
-        .then(res=>res.json())
-        .then(ticketSupport =>{
-            setStaticInformation({...setStaticInformation,
-                correo:ticketSupport.user.userCount.email,
-                name:ticketSupport.user.name,
-                father_lastname:ticketSupport.user.fatherLastname,
-                mother_lastname:ticketSupport.user.motherLastname,
-                date_ticket:ticketSupport.date,
-                issue:ticketSupport.issue,
-                description:ticketSupport.description,
-                nReclamo:ticketSupport.id
-
+    //Esto se cargara despues que se renderize el componente. 
+    useEffect(() => {
+        getTicket(id)
+          .then((ticketData) => {
+            setStaticInformation({
+                correo: ticketData.user.userCount.email,
+                name: ticketData.user.name,
+                father_lastname:ticketData.user.fatherLastname,
+                mother_lastname:ticketData.user.motherLastname,
+                date_ticket:ticketData.date,
+                issue:ticketData.issue,
+                description:ticketData.description,
+                nReclamo:ticketData.id
                 });
-            console.log(ticketSupport);
         });
-            
+        
+        const accessToken = localStorage.getItem("access_token");
+        if (accessToken) {
+            try {
+                const decodedToken = JSON.parse(atob(accessToken.split('.')[1]));
+
+                getUserInformation(decodedToken.user_id)
+                    .then(dataUser=>{
+                        console.log("ID DEL HELP EDSK", dataUser);
+
+                        setFormData({...formData,help_desk:dataUser.id});
+
+                    })
+                console.log(formData)
+            } catch (error) {
+                console.error("Error al decodificar el token:", error);
+            }
+        }
 
     },[]);
 
@@ -76,50 +120,51 @@ export function AnswerSuportPage(){
                                     <p>{staticInformation.description}</p>
 
                                 </div>
+                                <form  className="lg:col-span-2" onSubmit={submitAnswer}>
 
-                                <div className="lg:col-span-2">
+                                <div >
                                     <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
                                         <h1 className="text-center mx-auto text-base font-bold flex md:col-span-5">Formulario Respuesta</h1>
                                         <div className="md:col-span-5">
-                                            <label for="full_name">Titulo</label>
-                                            <input type="text" name="full_name" id="full_name" onChange={handleInputChange}
+                                            <label htmlFor="full_name">Titulo</label>
+                                            <input type="text" name="title" id="full_name" onChange={handleInputChange}
                                                 className="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value={formData.title} />
                                         </div>
 
                                         <div className="md:col-span-5">
-                                            <label for="email">Email Address</label>
-                                            <input type="text" name="email" id="email"
-                                                className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                                            <label htmlFor="email">Email Address Destination</label>
+                                            <input type="text" id="email"
+                                                className="h-10 block bg-gray-200 text-gray-500 border mt-1 rounded px-4 w-full bg-gray-50"
                                                 placeholder="email@domain.com"  readOnly value={staticInformation.correo}/>
                                         </div>
 
                                         <div className="md:col-span-5">
-                                            <label for="address">Comentario</label>
+                                            <label htmlFor="address">Comentario</label>
                                             <textarea type="text" name="answer" id="address"
                                                 className=" border mt-1 rounded px-4 w-full bg-gray-50"  rows="6" value={formData.answer} onChange={handleInputChange}/>
                                         </div>
 
                                         
                                         <div className="md:col-span-2">
-                                            <label for="country">N° Reclamo</label>
+                                            <label htmlFor="country">N° Reclamo</label>
                                             <input type="text"  id="city"
                                                 className="h-10 block bg-gray-200 text-gray-500 border mt-1 rounded px-4 w-full bg-gray-50"
                                                 placeholder="" name="ticket_support" value={staticInformation.nReclamo} readOnly />
                                         </div>
 
                                         <div className="md:col-span-2">
-                                            <label for="state">Fecha</label>
-                                            <input type="text" name="city" id="city"
+                                            <label htmlFor="state">Fecha</label>
+                                            <input type="text"  id="city"
                                                 className="h-10 block bg-gray-200 text-gray-500 border mt-1 rounded px-4 w-full bg-gray-50" value={formData.date}
-                                                placeholder=""  readonly/>
+                                                placeholder=""  readOnly/>
                                                 
                                         </div>
 
                                         <div className="md:col-span-1">
-                                            <label for="zipcode">Hora</label>
-                                            <input type="text" name="city" id="city"
+                                            <label htmlFor="zipcode">Hora</label>
+                                            <input type="text" id="city"
                                                 className="h-10 block bg-gray-200 text-gray-500 border mt-1 rounded px-4 w-full bg-gray-50" value="12:16 PM"
-                                                placeholder="" readonly />
+                                                placeholder="" readOnly />
                                         </div>
 
                                         
@@ -128,13 +173,16 @@ export function AnswerSuportPage(){
 
                                         <div className="md:col-span-5 text-right">
                                             <div className="inline-flex items-end">
-                                                <button
+                                                <button type="submit"
                                                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Responder</button>
                                             </div>
                                         </div>
 
                                     </div>
+
                                 </div>
+                                </form>
+
                             </div>
                         </div>
                     </div>

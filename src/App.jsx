@@ -1,9 +1,11 @@
 import { Routes, Route, BrowserRouter,Navigate } from 'react-router-dom';
 import { LoginFormPage } from './pages/LoginFormPage';
 import { HomePage } from './pages/HomePage';
-import { ServicePage } from './pages/ServicePage';
-import { TicketSupportPage } from './pages/TicketSuportPage';
-import { AnswerSuportPage } from './pages/AnswerSuportPage';
+import { ServicePage } from './pages/Client/ServicePage';
+import { TicketSupportPage } from './pages/Client/TicketSuportPage';
+import { AnswerSuportPage } from './pages/Admin/AnswerSuportPage';
+import { TicketsPage } from './pages/Admin/TicketsPage';
+import ConfigurationPage from './pages/ConfigurationPage';
 
 
 // Esta función verifica si el usuario está autenticado(tiene su token)
@@ -28,11 +30,14 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginFormPage />} />
+        <Route path="/configuration"  element={ isAuthenticated() ? <ConfigurationPage/> : <Navigate to="/login"/>}/>
         <Route
           path="/service"
           element={isAuthenticated() ? <ServicePage /> : <Navigate to="/login" />} />
-        <Route  path="/support" element={isAuthenticated() ? <TicketSupportPage/> : <Navigate to="/login"  />}/>
-        <Route path="/atenttion" element={isAuthenticated() ? <AnswerSuportPage/> : <Navigate to="/login" />}/>
+
+        <Route path="/supportList" element={isAuthenticated() ? <TicketsPage/> : <Navigate to="/login" />}/>
+        <Route  path="/ticketsupport" element={isAuthenticated() ? <TicketSupportPage/> : <Navigate to="/login"  />}/>
+        <Route path='/atenttion/:id' element={isAuthenticated() ? <AnswerSuportPage/> : <Navigate to="/login" />}/>
       </Routes>
     </BrowserRouter>
   );

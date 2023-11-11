@@ -1,0 +1,11 @@
+/* Importa la fuente Urbanist */
+@import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600&display=swap');
+
+.home-page {
+    font-family: 'Urbanist', sans-serif; /* Define la fuente solo para .home-page */
+    background-color: #F1F5F9;
+}
+
+.bg-personalized {
+    background-color: #CB7930;
+}

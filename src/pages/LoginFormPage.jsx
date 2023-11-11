@@ -10,10 +10,11 @@ export function LoginFormPage() {
         event.preventDefault();
 
         try {
-            const response = await fetch("http://localhost:8080/api/v1/auth/authenticate", {
+            const response = await fetch("http://localhost:8000/api/admin/authenticate/", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+
                 },
                 body: JSON.stringify(formData)
             });
@@ -21,12 +22,42 @@ export function LoginFormPage() {
             if (response.ok) {
                 // La solicitud fue exitosa, puedes manejar la respuesta aquí
                 const data = await response.json();
-                console.log(data)
-                // Guardar el token de acceso en localStorage
-                localStorage.setItem("access_token", data.access_token);
-                // Guardar el token de actualización en localStorage
-                localStorage.setItem("refresh_token", data.refresh_token);
-            }
+                if(data.access_token){
+                    // Guardar el token de acceso en localStorage
+                    localStorage.setItem("access_token", data.access_token);
+                    // Guardar el token de actualización en localStorage
+                    localStorage.setItem("refresh_token", data.refresh_token);
+                    console.log("ADMIN INGRESADO");
+                    console.log(data);
+
+
+                }else {
+                    // La solicitud falló, manejar el error aquí
+                    try {
+                        const response = await fetch("http://localhost:8080/api/v1/auth/authenticate", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+    
+                            },
+                            body: JSON.stringify(formData)
+                        });
+                        if(response.ok){
+                            const data = await response.json()
+                            // Guardar el token de acceso en localStorage
+                            localStorage.setItem("access_token", data.body.token);
+                            console.log("USUARIO INGRESADO");
+                            console.log(data);
+                        }
+    
+                    } catch (error) {
+                        console.error("Error"+error);
+                    }
+    
+                }
+                
+                
+            } 
         } catch (error) {
             console.error("Error al procesar la solicitud:", error);
         }
