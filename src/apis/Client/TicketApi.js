@@ -1,20 +1,18 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8080/api/v1'; // Cambia la URL a la API de tu servidor
+import axios from './axios-client';
 
 const getUserInformation = async(id) => {
     try {
-       const response = await axios.get(`${API_URL}/user/${id}`)
+       const response = await axios.get(`/user/${id}`)
        return response.data
     } catch (error) {
-     
+      console.log(error);
     }
  }
  
 
 const createTicketSupport = async(ticket,token) => {
    try {
-      const response = await axios.post(`${API_URL}/TicketSuport`,ticket,{
+      const response = await axios.post(`/TicketSuport`,ticket,{
          headers: {
            'Authorization': `Bearer ${token}` 
          }

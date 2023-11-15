@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
-
+import { useAuth } from '../context/AuthContext';
 import '../assets/css/sidebar.css'
 export function Sidebar() {
+
+    const { isAuthenticated, logout, checkoutLogin } = useAuth()
+
     useEffect(() => {
         const body = document.querySelector('body');
         const sidebar = body.querySelector('nav');
@@ -114,7 +117,10 @@ export function Sidebar() {
 
                 <div className="bottom-content">
                     <li className="">
-                        <a href="#">
+                        <a onClick={ () => {
+                            // Eliminará el token del localstorage
+                            logout()
+                        }}>
                             <i className='bx bx-log-out icon'></i>
                             <span className="text nav-text">Logout</span>
                         </a>

@@ -1,10 +1,19 @@
-import  { useState } from "react";
+import  { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export function LoginFormPage() {
     const [formData, setFormData] = useState({
         email: "",
         password: ""
     });
+    const navigate = useNavigate();
+    const { isAuthenticated, login, checkoutLogin } = useAuth();
+    console.log("AUTHENTICATE: "+ isAuthenticated)
+    // Cuando se authentique navegará a /service
+    useEffect( () => {
+        if (isAuthenticated) navigate('/service')
+    },[isAuthenticated]) // se ejecutará si isAuthenticated cambia
 
     const handleFormSubmit = async (event) => {
         event.preventDefault();
@@ -32,28 +41,9 @@ export function LoginFormPage() {
 
 
                 }else {
-                    // La solicitud falló, manejar el error aquí
-                    try {
-                        const response = await fetch("http://localhost:8080/api/v1/auth/authenticate", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-    
-                            },
-                            body: JSON.stringify(formData)
-                        });
-                        if(response.ok){
-                            const data = await response.json()
-                            // Guardar el token de acceso en localStorage
-                            localStorage.setItem("access_token", data.body.token);
-                            console.log("USUARIO INGRESADO");
-                            console.log(data);
-                        }
-    
-                    } catch (error) {
-                        console.error("Error"+error);
-                    }
-    
+                   // LOGIN API USER
+                    login(JSON.stringify(formData))
+      
                 }
                 
                 
