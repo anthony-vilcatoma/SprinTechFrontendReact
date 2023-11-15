@@ -12,6 +12,8 @@ const getUserInformation = async(id) => {
  }
  
 
+
+ 
 const createTicketSupport = async(ticket,token) => {
    try {
       const response = await axios.post(`${API_URL}/TicketSuport`,ticket,{
