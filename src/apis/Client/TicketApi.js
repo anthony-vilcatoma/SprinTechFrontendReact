@@ -10,6 +10,8 @@ const getUserInformation = async(id) => {
  }
  
 
+
+ 
 const createTicketSupport = async(ticket,token) => {
    try {
       const response = await axios.post(`/TicketSuport`,ticket,{
