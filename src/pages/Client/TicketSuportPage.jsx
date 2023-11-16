@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { LayaoutDashboard } from "../../components/LayaoutDashboard";
-import { getUserInformation, createTicketSupport } from "../../apis/Client/TicketApi"
-import { data } from "autoprefixer";
+import { createTicketSupport } from "../../apis/Client/TicketApi"
 export function TicketSupportPage() {
     // Estado para almacenar los datos del usuario y el formulario
     const [formData, setFormData] = useState({
-        userId: 1,
+        userId: null,
         issue: "",
         description: "",
         date: new Date().toISOString().split('T')[0], // Obtener la fecha actual en formato YYYY-MM-DD
@@ -24,21 +23,21 @@ export function TicketSupportPage() {
     // Efecto para cargar los datos del usuario al cargar el componente
     useEffect(() => {
         const accessToken = localStorage.getItem("access_token");
-        /*if (accessToken) {
+        if (accessToken) {
             try {
                 const decodedToken = JSON.parse(atob(accessToken.split('.')[1]));
                 // Actualizar el estado del formulario con los datos del usuario
                 setFormData({
                     ...formData,
-                    email: decodedToken.sub,
+                    userId: decodedToken.userId ,
                 });
-                console.log("Carga útil del token:", decodedToken);
+                console.log("Carga útil del token:", decodedToken.roleId);
             } catch (error) {
                 console.error("Error al decodificar el token:", error);
             }
         } else {
             console.error("No se encontró access_token en localStorage");
-        }*/
+        }
     }, []); // El efecto se ejecuta solo al cargar el componente ([] como dependencia)
 
 

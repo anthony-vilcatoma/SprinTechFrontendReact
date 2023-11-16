@@ -1,88 +1,136 @@
 import { useEffect } from 'react';
 import { LayaoutDashboard } from '../../components/LayaoutDashboard'
 import { getUserLocation } from '../../assets/js/userLocation';
+import { getAllTechnicals } from '../../apis/Client/TechnicalsApi'
+import { useState } from 'react';
 import icon from '../../assets/images/iconPersonMap.png'
+import { getAllProfessions } from '../../apis/Client/ProfessionApi';
 export function ServicePage() {
 
-    //definimos algunos lugares estaticos (cordenadas)
-    const ubications = [{ lat: -11.994802815418084, lng: -76.85871465369739 },
-        { lat: -11.997802815418084, lng: -76.86271465369739 },
-        { lat: -11.994302815418084, lng: -76.86221465369739 },
-        { lat: -11.996802815418084, lng: -76.85971465369739 },
-        { lat: -11.993802815418084, lng: -76.86371465369739 }]
-    useEffect(() => {
+    const [professions, setProfessions] = useState([]);
 
-        //traemos nuestra ubicacion y lo almacenamos en la variable location
-        getUserLocation()
-            .then(location => {
-                // definimos la funcion del mapa
-                window.initMap =  () => {
 
-                    //creamos una variable la cual sera el centro donde se mostrara el mapa al inicio( con las cordenadas de mi ubicacion)
-                    const centro = location
+    const initializeMap = async () => {
+        try {
+            const userLocation = await getUserLocation();
+            const infoWindow = new window.google.maps.InfoWindow();
 
-                    // es un objeto que sirve para mostrar informacion adicional en los marcadores
-                    const infoWindow = new google.maps.InfoWindow();
+            const map = new window.google.maps.Map(document.getElementById("map"), {
+                zoom: 16,
+                center: userLocation,
+            });
 
-                    // Inicializamos el mapa con su centro
-                    const map = new google.maps.Map(document.getElementById("map"), {
-                        zoom: 16,
-                        center: centro,
-                    });
+            const iconSize = new window.google.maps.Size(35, 40);
 
-                    const iconSize = new google.maps.Size(35, 40); // Ajustamos el tamaño del mercador(iconPersonMap.png)
-                    
-                    // Creamos un marcador que muestre el iconPersonMap el cual nos dira nuestra ubicacion
-                    const marker = new google.maps.Marker({
-                        position: centro,
-                        map: map,
-                        title: "",
-                        icon: {
-                            url: icon,
-                            scaledSize: iconSize,
-                        },
-                    });
-                    
-                    //enviamos una informacion con el objeto infdwindow!
-                    infoWindow.setContent('Este eres tu!');
-                    infoWindow.open(map, marker);
+            const userMarker = new window.google.maps.Marker({
+                position: userLocation,
+                map: map,
+                title: "",
+                icon: {
+                    url: icon,
+                    scaledSize: iconSize,
+                },
+            });
 
-                    //cremos marcadores para cada ubicacion de los lugares staticos definidos anteriormente.
-                    ubications.forEach(element => {
-                        // Añadimos un marcador con su lugar especifico de cada lugar
-                        const marker = new google.maps.Marker({
-                            position: element,
+            infoWindow.setContent('¡Esta es tu ubicación!');
+            infoWindow.open(map, userMarker);
+        } catch (error) {
+            console.error("Error occurred while initializing map:", error);
+        }
+    };
+
+
+
+    const loadNewMap = async (event) => {
+        event.preventDefault()
+        try {
+            const userLocation = await getUserLocation();
+            const infoWindow = new window.google.maps.InfoWindow();
+
+            const map = new window.google.maps.Map(document.getElementById("map"), {
+                zoom: 16,
+                center: userLocation,
+            });
+
+            const iconSize = new window.google.maps.Size(35, 40);
+
+            const userMarker = new window.google.maps.Marker({
+                position: userLocation,
+                map: map,
+                title: "",
+                icon: {
+                    url: icon,
+                    scaledSize: iconSize,
+                },
+            });
+
+            infoWindow.setContent('¡Esta es tu ubicación!');
+            infoWindow.open(map, userMarker);
+
+
+            //Cargando a todos los tecnicos 
+            const accessToken = localStorage.getItem("access_token");
+            getAllTechnicals(accessToken)
+                .then(data => {
+                    const tecnicos = data.body;
+                    tecnicos.forEach(element => {
+                        const marker = new window.google.maps.Marker({
+                            position: { lat: parseFloat(element.latitude), lng: parseFloat(element.longitude) },
                             map: map,
-                            title: "",
-                            
+                            title: "Xd"
                         });
-                        // Añadimos un evento click para ver informacion adicional del marcador creado.
-                        marker.addListener('click', () => {
-                            infoWindow.setContent('This is Tecsup!');
+
+                        var infoWindow = new google.maps.InfoWindow({
+                            content: element.name + ' '+element.lastname
+                        });
+                        marker.addListener("click",()=>{
                             infoWindow.open(map, marker);
+
                         });
-                    });
-                    
+
+                        console.log({ lat: element.latitude, lng: element.longitude })
+                    })
+                })
 
 
-
-                };
-
-                
-                // Cargar el script de la API de Google Maps
-                const script = document.createElement("script");
-                script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBihRqZC1ca4ienBNShbR6ZtNPoLxkrntU&callback=initMap&v=weekly`;
-                script.defer = true;
-                document.head.appendChild(script);
-
-                // Liberar recursos al desmontar el componente
-                return () => {
-                    document.head.removeChild(script);
-                };
-            })
+        } catch (error) {
+            console.error("Error occurred while initializing map:", error);
+        }
+    };
 
 
-    }, []); 
+    useEffect(() => {
+        const accessToken = localStorage.getItem("access_token");
+        getAllProfessions(accessToken)
+                .then(data=>{
+                    const professions = data.body
+                    setProfessions(professions)
+
+                })
+        // Check if the Google Maps script is already loaded
+        if (!window.google) {
+            // Load the Google Maps script
+            const script = document.createElement("script");
+            script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBihRqZC1ca4ienBNShbR6ZtNPoLxkrntU&callback=initMap&v=weekly`;
+            script.defer = true;
+            document.head.appendChild(script);
+
+            // Set the initMap function to your custom initializeMap function
+            window.initMap = initializeMap;
+
+            // Clean up resources when the component is unmounted
+            return () => {
+                document.head.removeChild(script);
+                window.initMap = undefined;
+            };
+        } else {
+            // If the script is already loaded, directly initialize the map
+            initializeMap();
+            
+
+        }
+
+    }, []); // The empty dependency ensures that this effect runs only once
 
     return (
         <LayaoutDashboard>
@@ -101,15 +149,15 @@ export function ServicePage() {
                         <select
                             className="form-select-map  py-3 px-4 pr-9 block w-9/12 border-gray-200 rounded-md text-base 	
                             focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5 mx-auto mb-8">
-                            <option value="Oficina del tecnico">Oficina del tecnico</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
+                            <option selected>Seleccione la Profession</option>
+                            {professions.map(opcion => (
+                                <option key={opcion.id} value={opcion.name}>{opcion.name}</option>
+                            ))}
                         </select>
                         <select
                             className="form-select-map  py-3 px-4 pr-9 block w-9/12 border-gray-200 rounded-md text-base 	
                             focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5 mx-auto mb-8">
-                            <option value="Elige tu tecnico">Grado del tecnico</option>
+                            <option selected>Categorias de la Profession</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -118,9 +166,9 @@ export function ServicePage() {
                             className="form-select-map  py-3 px-4 pr-9 block w-9/12 border-gray-200 rounded-md text-base 	
                             focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5 mx-auto mb-8">
                             <option value="Elige Disponibilidad">Disponibilidad del tecnico</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
+                            <option value="1">En taller</option>
+                            <option value="2">A ubicación</option>
+                            <option value="3">Ambas</option>
                         </select>
 
                         <div className="w-9/12 flex justify-between mx-auto">
@@ -142,7 +190,7 @@ export function ServicePage() {
                             </select>
                         </div>
 
-                        <button className="boton_buscar block w-9/12 font-bold	 text-2xl p-3 mx-auto rounded-md">BUSCAR
+                        <button onClick={loadNewMap} className="boton_buscar block w-9/12 font-bold	 text-2xl p-3 mx-auto rounded-md">BUSCAR
                             ESPECIALISTAS</button>
                     </form>
                 </div>
