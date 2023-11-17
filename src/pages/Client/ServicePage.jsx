@@ -11,6 +11,7 @@ import { DirectRequestModal } from '../../components/DirectRequestModal';
 
 import { getCategoriesByService, getProfessions } from '../../apis/Client/ProfessionApi';
 import { getAllOptionsAvailability } from '../../apis/Client/availability';
+import { TechnicalDiv } from '../../components/Client/TechnicalDiv';
 
 
 
@@ -23,7 +24,7 @@ export function ServicePage() {
     const [professions, setProfessions] = useState([]);
     const [avalibalities, setAvalibalities] = useState([]);
     const [categoryByService, setCategoryByService] = useState([]);
-
+    const [technicals, setTechnicals] = useState([]);
 
     const [dataApiProcedure, setDataApiProcedure] = useState({
         professionId: null,
@@ -40,11 +41,11 @@ export function ServicePage() {
         title: '',
         description: '',
         images: [],
-      });
-    
-      const handleFormValuesUpdate = (updatedFormValues) => {
+    });
+
+    const handleFormValuesUpdate = (updatedFormValues) => {
         setFormValues(updatedFormValues);
-      };
+    };
 
 
 
@@ -182,8 +183,9 @@ export function ServicePage() {
             //Cargando a todos los tecnicos 
             getTechnicallsByLocation(accessToken, dataApiProcedure.professionId, dataApiProcedure.availabilityId, dataApiProcedure.latitude, dataApiProcedure.longitude, dataApiProcedure.distance)
                 .then(data => {
+                    console.log(data.data.body);
                     const technicals = data.data.body;
-                    console.log(technicals);
+                    setTechnicals(technicals)
                     technicals.forEach(element => {
                         const marker = new window.google.maps.Marker({
                             position: { lat: parseFloat(element.latitude), lng: parseFloat(element.longitude) },
@@ -431,174 +433,37 @@ export function ServicePage() {
                 </div>
 
                 <div className="listadoespecialistas w-4/12 overflow-y-scroll	">
-                    <div className="request relative flex w-full h-fit p-3 mb-5 bg-white rounded-2xl">
-                        <div className="information-request w-7/12">
-                            <ul>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">NOMBRES:</b> BRUNO RAUL</p>
 
-                                </li>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">APELLIDOS:</b> CHIGNE MEDINA</p>
-                                </li>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">EDAD:</b> 45 AÑOS</p>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className="botones w-6/12 flex items-center justify-around">
-                            <button className="ver   flex items-center justify-center w-16 h-fit font-bold	  p-3  rounded-md">VER</button>
-                            <button className="solicitar   flex items-center justify-center w-fit h-fit font-bold p-3 rounded-md">SOLICITAR</button>
-                        </div>
-                        <span className=" absolute right-7 top-2 font-semibold text-gray-400">MECANICO</span>
-                    </div>
-                    <div className="request relative flex w-full h-fit p-3 mb-5 bg-white rounded-2xl">
-                        <div className="information-request w-7/12">
-                            <ul>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">NOMBRES:</b> BRUNO RAUL</p>
 
-                                </li>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">APELLIDOS:</b> CHIGNE MEDINA</p>
-                                </li>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">EDAD:</b> 45 AÑOS</p>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className="botones w-6/12 flex items-center justify-around">
-                            <button className="ver   flex items-center justify-center w-16 h-fit font-bold	  p-3  rounded-md">VER</button>
-                            <button className="solicitar   flex items-center justify-center w-fit h-fit font-bold p-3 rounded-md">SOLICITAR</button>
-                        </div>
-                        <span className=" absolute right-7 top-2 font-semibold text-gray-400">MECANICO</span>
-                    </div>
-                    <div className="request relative flex w-full h-fit p-3 mb-5 bg-white rounded-2xl">
-                        <div className="information-request w-7/12">
-                            <ul>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">NOMBRES:</b> BRUNO RAUL</p>
+                    {technicals.map(opcion => (
+                        <div className="request relative flex w-full h-fit p-3 mb-5 bg-white rounded-2xl">
+                            <div className="information-request w-7/12">
+                                <ul>
+                                    <li>
+                                        <p className="font-medium text-gray-700	"><b className="text-black">NOMBRES:</b> {opcion.name}</p>
 
-                                </li>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">APELLIDOS:</b> CHIGNE MEDINA</p>
-                                </li>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">EDAD:</b> 45 AÑOS</p>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className="botones w-6/12 flex items-center justify-around">
-                            <button className="ver   flex items-center justify-center w-16 h-fit font-bold	  p-3  rounded-md">VER</button>
-                            <button className="solicitar   flex items-center justify-center w-fit h-fit font-bold p-3 rounded-md">SOLICITAR</button>
-                        </div>
-                        <span className=" absolute right-7 top-2 font-semibold text-gray-400">MECANICO</span>
-                    </div>
-                    <div className="request relative flex w-full h-fit p-3 mb-5 bg-white rounded-2xl">
-                        <div className="information-request w-7/12">
-                            <ul>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">NOMBRES:</b> BRUNO RAUL</p>
+                                    </li>
+                                    <li>
+                                        <p className="font-medium text-gray-700	"><b className="text-black">APELLIDOS:</b> {opcion.lastname}</p>
+                                    </li>
+                                    <li>
+                                        <p className="font-medium text-gray-700	"><b className="text-black">EDAD:</b> {opcion.birthDate}</p>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div className="botones w-6/12 flex items-center justify-around">
+                                <button className="ver   flex items-center justify-center w-16 h-fit font-bold	  p-3  rounded-md">VER</button>
+                                <button className="solicitar   flex items-center justify-center w-fit h-fit font-bold p-3 rounded-md">SOLICITAR</button>
+                            </div>
+                            {professions
+                                .filter(profession => profession.name === 'Mecanico')
+                                .map(electricistaProfession => (
+                                    <span className=" absolute right-7 top-2 font-semibold text-gray-400">{electricistaProfession.name}</span>
 
-                                </li>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">APELLIDOS:</b> CHIGNE MEDINA</p>
-                                </li>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">EDAD:</b> 45 AÑOS</p>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className="botones w-6/12 flex items-center justify-around">
-                            <button className="ver   flex items-center justify-center w-16 h-fit font-bold	  p-3  rounded-md">VER</button>
-                            <button className="solicitar   flex items-center justify-center w-fit h-fit font-bold p-3 rounded-md">SOLICITAR</button>
-                        </div>
-                        <span className=" absolute right-7 top-2 font-semibold text-gray-400">MECANICO</span>
-                    </div>
-                    <div className="request relative flex w-full h-fit p-3 mb-5 bg-white rounded-2xl">
-                        <div className="information-request w-7/12">
-                            <ul>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">NOMBRES:</b> BRUNO RAUL</p>
+                                ))}
+                        </div>))}
 
-                                </li>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">APELLIDOS:</b> CHIGNE MEDINA</p>
-                                </li>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">EDAD:</b> 45 AÑOS</p>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className="botones w-6/12 flex items-center justify-around">
-                            <button className="ver   flex items-center justify-center w-16 h-fit font-bold	  p-3  rounded-md">VER</button>
-                            <button className="solicitar   flex items-center justify-center w-fit h-fit font-bold p-3 rounded-md">SOLICITAR</button>
-                        </div>
-                        <span className=" absolute right-7 top-2 font-semibold text-gray-400">MECANICO</span>
-                    </div>
-                    <div className="request relative flex w-full h-fit p-3 mb-5 bg-white rounded-2xl">
-                        <div className="information-request w-7/12">
-                            <ul>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">NOMBRES:</b> BRUNO RAUL</p>
 
-                                </li>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">APELLIDOS:</b> CHIGNE MEDINA</p>
-                                </li>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">EDAD:</b> 45 AÑOS</p>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className="botones w-6/12 flex items-center justify-around">
-                            <button className="ver   flex items-center justify-center w-16 h-fit font-bold	  p-3  rounded-md">VER</button>
-                            <button className="solicitar   flex items-center justify-center w-fit h-fit font-bold p-3 rounded-md">SOLICITAR</button>
-                        </div>
-                        <span className=" absolute right-7 top-2 font-semibold text-gray-400">MECANICO</span>
-                    </div>
-                    <div className="request relative flex w-full h-fit p-3 mb-5 bg-white rounded-2xl">
-                        <div className="information-request w-7/12">
-                            <ul>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">NOMBRES:</b> BRUNO RAUL</p>
-
-                                </li>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">APELLIDOS:</b> CHIGNE MEDINA</p>
-                                </li>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">EDAD:</b> 45 AÑOS</p>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className="botones w-6/12 flex items-center justify-around">
-                            <button className="ver   flex items-center justify-center w-16 h-fit font-bold	  p-3  rounded-md">VER</button>
-                            <button className="solicitar   flex items-center justify-center w-fit h-fit font-bold p-3 rounded-md">SOLICITAR</button>
-                        </div>
-                        <span className=" absolute right-7 top-2 font-semibold text-gray-400">MECANICO</span>
-                    </div>
-                    <div className="request relative flex w-full h-fit p-3 mb-5 bg-white rounded-2xl">
-                        <div className="information-request w-7/12">
-                            <ul>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">NOMBRES:</b> BRUNO RAUL</p>
-
-                                </li>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">APELLIDOS:</b> CHIGNE MEDINA</p>
-                                </li>
-                                <li>
-                                    <p className="font-medium text-gray-700	"><b className="text-black">EDAD:</b> 45 AÑOS</p>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className="botones w-6/12 flex items-center justify-around">
-                            <button className="ver   flex items-center justify-center w-16 h-fit font-bold	  p-3  rounded-md">VER</button>
-                            <button className="solicitar   flex items-center justify-center w-fit h-fit font-bold p-3 rounded-md">SOLICITAR</button>
-                        </div>
-                        <span className=" absolute right-7 top-2 font-semibold text-gray-400">MECANICO</span>
-                    </div>
 
                 </div>
             </div>
