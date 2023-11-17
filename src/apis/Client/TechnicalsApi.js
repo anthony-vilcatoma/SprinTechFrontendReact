@@ -1,21 +1,6 @@
+import axios from "./axios-client";
 
-import axios from 'axios';
+export const getTechnicallsByLocation = (token,professionId,availabilityId,latitude,longitude,distance) =>  
+axios.get(`/technicals?professionId=${professionId}&availabilityId=${availabilityId}&latitude=${latitude}&longitude=${longitude}&distance=${distance}`,
+{headers:{Authorization: `Bearer ${token}`}})
 
-const API_URL = 'http://localhost:8080/api/v1'; // Cambia la URL a la API de tu servidor
-
-const getAllTechnicals = async (token) => {
-
-    try {
-        const response = await axios.get(`${API_URL}/technicals/all`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-        return response.data
-    } catch (error) {
-        return error
-    }
-}
-
-
-export { getAllTechnicals }

@@ -1,0 +1,12 @@
+/* Estilos para InfoWindow */
+.gm-style-iw {
+    padding: 0 !important;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    background-color: white;
+  }
+  
+  /* Contenido del InfoWindow */
+  .gm-style-iw div {
+    padding: 10px;
+  }
