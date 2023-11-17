@@ -1,14 +1,17 @@
 import { useEffect } from 'react';
+import { Button } from 'flowbite-react';
 import { LayaoutDashboard } from '../../components/LayaoutDashboard'
 import { getUserLocation } from '../../assets/js/userLocation';
 import { getAllTechnicals } from '../../apis/Client/TechnicalsApi'
 import { useState } from 'react';
 import icon from '../../assets/images/iconPersonMap.png'
 import { getAllProfessions } from '../../apis/Client/ProfessionApi';
+import { DirectRequestModal } from '../../components/DirectRequestModal';
+
 export function ServicePage() {
 
     const [professions, setProfessions] = useState([]);
-
+    const [isOpenModal, setIsOpenModal] = useState(false);
 
     const initializeMap = async () => {
         try {
@@ -80,7 +83,7 @@ export function ServicePage() {
                             title: "Xd"
                         });
 
-                        var infoWindow = new google.maps.InfoWindow({
+                        var infoWindow = new window.google.maps.InfoWindow({
                             content: element.name + ' '+element.lastname
                         });
                         marker.addListener("click",()=>{
@@ -103,9 +106,9 @@ export function ServicePage() {
         const accessToken = localStorage.getItem("access_token");
         getAllProfessions(accessToken)
                 .then(data=>{
-                    const professions = data.body
+                    const professions = data.data.body
                     setProfessions(professions)
-
+                    console.log(data);
                 })
         // Check if the Google Maps script is already loaded
         if (!window.google) {
@@ -180,14 +183,11 @@ export function ServicePage() {
                                 <option value="2">2</option>
                                 <option value="3">3</option>
                             </select>
-                            <select
-                                className="form-select-map  py-3 px-4 pr-9 block w-5/12 border-gray-200 rounded-md text-base 	
-                                focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5  mb-8">
-                                <option value="Elige tu Distrito">Elige tu distrito</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                            </select>
+                            <Button 
+                                style={{height: '68px'}}
+                                className='bg-blue-400 text-4xl'
+                                onClick={() => setIsOpenModal(true)}>DETALLA TU PROBLEMA</Button>
+                            {isOpenModal && <DirectRequestModal onCloseModal={() => setIsOpenModal(false)} isOpen={isOpenModal} />}
                         </div>
 
                         <button onClick={loadNewMap} className="boton_buscar block w-9/12 font-bold	 text-2xl p-3 mx-auto rounded-md">BUSCAR

@@ -1,18 +1,7 @@
-import axios from "axios";
+import axios from "./axios-client"
 
-const API_URL = 'http://localhost:8080/api/v1'; // Cambia la URL a la API de tu servidor
-
-const getAllProfessions = async(token) =>{
-    try{
-        const response = await axios.get(`${API_URL}/professions`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-        return response.data
-    }catch{
-
+export const getAllProfessions = (token) => axios.get("professions", {
+    headers: {
+        "Authorization": `Bearer ${token}`,
     }
-};
-
-export {getAllProfessions}
+});
