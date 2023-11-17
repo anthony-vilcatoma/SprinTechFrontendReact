@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Button } from 'flowbite-react';
 import { LayaoutDashboard } from '../../components/LayaoutDashboard'
 import { getUserLocation } from '../../assets/js/userLocation';
 import { getTechnicallsByLocation } from '../../apis/Client/TechnicalsApi'
@@ -6,10 +7,10 @@ import '../../assets/css/googlemaps.css'
 import { useState } from 'react';
 import icon from '../../assets/images/iconPersonMap.png'
 import banderita from '../../assets/images/banderita.png'
+import { DirectRequestModal } from '../../components/DirectRequestModal';
 
 import { getCategoriesByService, getProfessions } from '../../apis/Client/ProfessionApi';
 import { getAllOptionsAvailability } from '../../apis/Client/availability';
-import { data } from 'autoprefixer';
 
 
 
@@ -30,7 +31,25 @@ export function ServicePage() {
         latitude: null,
         longitude: null,
         distance: null,
+        title: '',
+        description: '',
+        images: [],
     });
+
+    const [formValues, setFormValues] = useState({
+        title: '',
+        description: '',
+        images: [],
+      });
+    
+      const handleFormValuesUpdate = (updatedFormValues) => {
+        setFormValues(updatedFormValues);
+      };
+
+
+
+
+
 
     const handleInputChangeApiProcedure = (event) => {
         const { name, value } = event.target;
@@ -60,7 +79,7 @@ export function ServicePage() {
             const map = new google.maps.Map(document.getElementById('map'), {
                 center: userLocation,
                 zoom: 15
-            }); 
+            });
             const iconSize = new window.google.maps.Size(35, 40);
 
             let marker = new google.maps.Marker({
@@ -94,6 +113,7 @@ export function ServicePage() {
     }
 
 
+    const [isOpenModal, setIsOpenModal] = useState(false);
 
     const initializeMap = async () => {
         try {
@@ -176,6 +196,7 @@ export function ServicePage() {
         } catch (error) {
             console.error("Error occurred while initializing map:", error);
         }
+        console.log(formValues)
     };
 
 
@@ -297,14 +318,15 @@ export function ServicePage() {
                                 <option value="1">Mi ubicación</option>
                                 <option value="2">Otra Ubicación</option>
                             </select>
-                            <select
-                                className="form-select-map  py-3 px-4 pr-9 block w-5/12 border-gray-200 rounded-md text-base 	
-                                focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5  mb-8">
-                                <option disabled selected value>Elige tu distrito</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                            </select>
+                            <Button
+                                style={{ height: '68px' }}
+                                className='bg-blue-400 text-4xl'
+                                onClick={() => setIsOpenModal(true)}>DETALLA TU PROBLEMA</Button>
+                            {isOpenModal && <DirectRequestModal
+                                onCloseModal={() => setIsOpenModal(false)}
+                                isOpen={isOpenModal}
+                                onUpdateFormValues={handleFormValuesUpdate}
+                            />}
                         </div>
 
 

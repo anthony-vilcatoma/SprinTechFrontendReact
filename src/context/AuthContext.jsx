@@ -24,10 +24,10 @@ export const useAuth = () => {
  */
 export const AuthProvider = ({children}) => {
 
-  const storedToken = localStorage.getItem("access_token");
+
   // Usuario que va a poder ser leído de forma global en la app
   //const [user, setUser] = useState(null) //Devuelve un valor con estado y una función para actualizarlo.
-  const [isAuthenticated, setAuthenticated] = useState(!!storedToken); // !!.. convierte en un valor booleano
+  const [isAuthenticated, setAuthenticated] = useState(false); // !!.. convierte en un valor booleano
   const [loading, setLoading] = useState(true) // Utilizaremos determinar si la solicitud carga
 
 
@@ -49,47 +49,46 @@ export const AuthProvider = ({children}) => {
   const logout = () => {
     // Remover token del LOCAL STORAGE
     localStorage.removeItem("access_token")
-    sessionStorage.removeItem("hasToken")
     setAuthenticated(false)
   }
 
-
-  useEffect( () => {
-    // Verificar solo si no hay token en sessionStorage
-    const hasTokenInSessionStorage = sessionStorage.getItem('hasToken');
-
-    async function checkLogin() {
-      try {
-        const res = await verifyTokenRequest({"token": storedToken});
-
-        if (!res.data) {
-          setAuthenticated(false);
-          setLoading(false);
-          return;
+    // Cuando se carge la pagina
+    useEffect(() => {
+      async function checkLogin() {
+        const tokenStored = localStorage.getItem("access_token");
+  
+        // Si no se encontro el token
+        if (tokenStored == null) {
+          setAuthenticated(false)
+          setLoading(false)
+          return 
         }
+  
+        // En caso exista el token
+        try {
+          // enviamos el token para que se verifique en el backend
+          const res = await verifyTokenRequest({"token":tokenStored})
+          
+          // Si no se recibe una respuesta
+          if (!res) {
+            setAuthenticated(false)
+            setLoading(false)
+            return;
+          }
 
-        setAuthenticated(true);
-        sessionStorage.setItem('hasToken', 'true'); // Marcar que ya se hizo la verificación
-      } catch (error) {
-        setAuthenticated(false);
-      } finally {
-        setLoading(false);
+          // Si se recibe una respuesta(user)
+          setAuthenticated(true)
+          setLoading(false)
+        } catch (error) {
+          // Si axios recibío un error
+          setAuthenticated(false)
+          setLoading(false)
+        }
       }
-    }
+      // EJECUTAMOS LA FUNCION ASINCRONA
+      checkLogin()
+    },[])  
 
-    if (!hasTokenInSessionStorage && storedToken) {
-      // Validamos el token usando la API
-      checkLogin();
-    } else if (hasTokenInSessionStorage) {
-      // No es necesario verificar, utilizar el resultado almacenado previamente
-      setAuthenticated(true);
-      setLoading(false);
-    } else {
-      // No hay token, establecer estado en consecuencia
-      setAuthenticated(false);
-      setLoading(false);
-    }
-  }, [storedToken])
 
   return (
     <AuthContext.Provider value={{
