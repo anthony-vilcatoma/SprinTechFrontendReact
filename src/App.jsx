@@ -2,6 +2,7 @@ import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { LoginFormPage } from './pages/LoginFormPage';
 import { HomePage } from './pages/HomePage';
+import { RegisterFormPage } from './pages/RegisterFormPage'
 import { ServicePage } from './pages/Client/ServicePage';
 import { TicketSupportPage } from './pages/Client/TicketSuportPage';
 import { AnswerSuportPage } from './pages/Admin/AnswerSuportPage';
@@ -19,6 +20,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginFormPage />} />
+          <Route path="/register" element={<RegisterFormPage />} />
 
           {/* ProtectedRoute: verificará si el usuario esta authentificado */}
           <Route element={<ProtectedRoute/>} >

@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.bg-orange-personalized {
+  background-color: #CB7930;
+}
+
+.bg-hover-orange-personalized {
+  background-color: #d68f50;
+}
