@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import '../../assets/css/service.css'
 import { Button } from 'flowbite-react';
 import { LayaoutDashboard } from '../../components/LayaoutDashboard'
 import { getUserLocation } from '../../assets/js/userLocation';
@@ -13,20 +14,23 @@ import { getCategoriesByService, getProfessions } from '../../apis/Client/Profes
 import { getAllOptionsAvailability } from '../../apis/Client/availability';
 import { TechnicalDiv } from '../../components/Client/TechnicalDiv';
 import TechnicalInformation from '../../components/Client/TechnicalInformation';
+import { createServiceRequest } from '../../apis/Client/DirectRequest';
+import { getUserInformation } from '../../apis/Client/UserApi';
 
 
 
 export function ServicePage() {
     //Guardamos el token para poder llenarla en cualquier peticion
     const accessToken = localStorage.getItem("access_token");
+    const decodedToken = JSON.parse(atob(accessToken.split('.')[1]));
 
     //estado para mostrar informacion del tecnico y variable que almacena al tecnico 
     const [loadInformation, setLoadInformation] = useState(true);
     const [renderTechnical, setRenderTechnical] = useState(true);
     const [technicalInformation, setTechnicalInformation] = useState({});
+    const [categoryService, setCategoryService] = useState();
 
-
-    //Load the Necesary Information in the form to look at or get the service
+    //Load the Necesary Information in the form to look at or get the service(practicando mi ingles pipipi)
     const [professions, setProfessions] = useState([]);
     const [avalibalities, setAvalibalities] = useState([]);
     const [categoryByService, setCategoryByService] = useState([]);
@@ -41,6 +45,7 @@ export function ServicePage() {
         title: '',
         description: '',
         images: [],
+        clienteId: null,
     });
 
     const [formValues, setFormValues] = useState({
@@ -53,7 +58,7 @@ export function ServicePage() {
         setFormValues(updatedFormValues);
     };
 
-
+    console.log('Datos del formulario:', formValues);
 
 
 
@@ -184,7 +189,7 @@ export function ServicePage() {
             infoWindow.open(map, userMarker);
 
 
-            console.log(dataApiProcedure)
+            console.log(dataApiProcedure, "xsadasd")
 
             //Cargando a todos los tecnicos 
             getTechnicallsByLocation(accessToken, dataApiProcedure.professionId, dataApiProcedure.availabilityId, dataApiProcedure.latitude, dataApiProcedure.longitude, dataApiProcedure.distance)
@@ -193,10 +198,18 @@ export function ServicePage() {
                     const technicals = data.data.body;
                     setTechnicals(technicals)
                     technicals.forEach(element => {
-                        const marker = new window.google.maps.Marker({
-                            position: { lat: parseFloat(element.latitude), lng: parseFloat(element.longitude) },
-                            map: map,
-                        })
+                        if (dataApiProcedure.availabilityId == 1) {
+                            const marker = new window.google.maps.Marker({
+                                position: { lat: parseFloat(element.latitude), lng: parseFloat(element.longitude) },
+                                map: map,
+                            })
+                        } else {
+                            const marker = new window.google.maps.Marker({
+                                position: { lat: parseFloat(element.professionAvailability.latitude), lng: parseFloat(element.professionAvailability.longitude) },
+                                map: map,
+                            })
+                        }
+
                     })
                 })
 
@@ -226,6 +239,10 @@ export function ServicePage() {
                     setCategoryByService(data.data.body)
                 })
 
+            getUserInformation(decodedToken.sub, accessToken)
+                .then(res => {
+                    setDataApiProcedure({ ...dataApiProcedure, clienteId: res.data.body.id })
+                })
         } catch (error) {
 
         }
@@ -259,120 +276,160 @@ export function ServicePage() {
         }
 
     }, []); // The empty dependency ensures that this effect runs only once
-
-    console.log("Tecnico Information", technicalInformation)
+    console.log("xd", technicals);
     return (
         <LayaoutDashboard>
-            <div className="map-form  bg-white flex flex-row w-10/12 mx-auto mb-48 mt-24 rounded-2xl shadow-2xl">
-                <div className="w-7/12 h-full ">
-                    <div className="bg-gray-100 rounded-l-2xl h-full w-full" id='map'>
+            <div className="container-all-service" >
+
+                <div className="map-form  bg-white flex flex-row w-10/12 mx-auto mb-48 mt-24 rounded-2xl shadow-2xl">
+                    <div className="w-7/12 h-full ">
+                        <div className="bg-gray-100 rounded-l-2xl h-full w-full" id='map'>
+
+                        </div>
 
                     </div>
-
-                </div>
-                <div className="w-5/12 	">
-                    <form action="">
-                        <div className="flex w-9/12 mx-auto justify-between items-center">
-                            <div className="title mx-auto w-9/12 h-5 mt-9 mb-12 text-2xl font-semibold">
-                                BUSCA A TU TECNICO
-                            </div>
-                            <select
-                                name='distance'
-                                onChange={handleInputChangeApiProcedure}
-                                className="form-select-map  p-2 block w-4/12 border-gray-200 rounded-md text-base 	
+                    <div className="w-5/12 	">
+                        <form action="">
+                            <div className="flex w-9/12 mx-auto justify-between items-center">
+                                <div className="title mx-auto w-9/12 h-5 mt-9 mb-12 text-2xl font-semibold">
+                                    BUSCA A TU TECNICO
+                                </div>
+                                <select
+                                    name='distance'
+                                    onChange={handleInputChangeApiProcedure}
+                                    className="form-select-map  p-2 block w-4/12 border-gray-200 rounded-md text-base 	
                             focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400   ">
-                                <option disabled selected value>Rango</option>
-                                <option value="5">5 Kilometro</option>
-                                <option value="7">7 Kilometros</option>
-                                <option value="10">10 Kilometros</option>
+                                    <option disabled selected value>Rango</option>
+                                    <option value="5">5 Kilometro</option>
+                                    <option value="7">7 Kilometros</option>
+                                    <option value="10">10 Kilometros</option>
 
-                            </select>
-                        </div>
+                                </select>
+                            </div>
 
-                        <select
-                            name='professionId'
-                            onChange={handleInputChangeApiProcedure}
-                            className="form-select-map  py-3 px-4 pr-9 block w-9/12 border-gray-200 rounded-md text-base 	
-                            focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5 mx-auto mb-8">
-                            <option disabled selected value>Seleccione la Profession</option>
-                            {professions.map(opcion => (
-                                <option key={opcion.id} value={opcion.id}>{opcion.name}</option>
-                            ))}
-                        </select>
-                        <select
-                            className="form-select-map  py-3 px-4 pr-9 block w-9/12 border-gray-200 rounded-md text-base 	
-                            focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5 mx-auto mb-8">
-                            {categoryByService.map(opcion => (
-                                <option key={opcion.id} value={opcion.id}>{opcion.name} </option>
-                            ))}
-                        </select>
-                        <select
-                            name='availabilityId'
-                            onChange={handleInputChangeApiProcedure}
-
-                            className="form-select-map  py-3 px-4 pr-9 block w-9/12 border-gray-200 rounded-md text-base 	
-                            focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5 mx-auto mb-8">
-                            <option disabled selected value>Disponibilidad del tecnico</option>
-                            {avalibalities.map(opcion => (
-                                <option key={opcion.id} value={opcion.id}>{opcion.name}</option>
-                            ))}
-                        </select>
-
-                        <div className="w-9/12 flex justify-between mx-auto">
                             <select
-                                onChange={handleInputSelectLocation}
-                                className="form-select-map  py-3 px-4 pr-9 block w-5/12 border-gray-200 rounded-md text-base 	
-                            focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5  mb-8">
-                                <option disabled selected value>Elige tu Ubicación</option>
-                                <option value="1">Mi ubicación</option>
-                                <option value="2">Otra Ubicación</option>
+                                name='professionId'
+                                onChange={handleInputChangeApiProcedure}
+                                className="form-select-map  py-3 px-4 pr-9 block w-9/12 border-gray-200 rounded-md text-base 	
+                            focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5 mx-auto mb-8">
+                                <option disabled selected value>Seleccione la Profession</option>
+                                {professions.map(opcion => (
+                                    <option key={opcion.id} value={opcion.id}>{opcion.name}</option>
+                                ))}
                             </select>
-                            <Button
-                                style={{ height: '68px' }}
-                                className='bg-blue-400 text-4xl'
-                                onClick={() => setIsOpenModal(true)}>DETALLA TU PROBLEMA</Button>
-                            {isOpenModal && <DirectRequestModal
-                                onCloseModal={() => setIsOpenModal(false)}
-                                isOpen={isOpenModal}
-                                onUpdateFormValues={handleFormValuesUpdate}
-                            />}
-                        </div>
+                            <select
+                                name='categoryService'
+                                onChange={(event) => {
+                                    setCategoryService(event.target.value)
+                                }}
+                                className="form-select-map  py-3 px-4 pr-9 block w-9/12 border-gray-200 rounded-md text-base 	
+                            focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5 mx-auto mb-8">
+                                <option disabled selected value>Seleccione la categoria</option>
+                                {categoryByService.map(opcion => (
+                                    <option key={opcion.id} value={opcion.id}>{opcion.name} </option>
+                                ))}
+                            </select>
+                            <select
+                                name='availabilityId'
+                                onChange={handleInputChangeApiProcedure}
+
+                                className="form-select-map  py-3 px-4 pr-9 block w-9/12 border-gray-200 rounded-md text-base 	
+                            focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5 mx-auto mb-8">
+                                <option disabled selected value>Disponibilidad del tecnico</option>
+                                {avalibalities.map(opcion => (
+                                    <option key={opcion.id} value={opcion.id}>{opcion.name}</option>
+                                ))}
+                            </select>
+
+                            <div className="w-9/12 flex justify-between mx-auto">
+                                <select
+                                    onChange={handleInputSelectLocation}
+                                    className="form-select-map  py-3 px-4 pr-9 block w-5/12 border-gray-200 rounded-md text-base 	
+                            focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5  mb-8">
+                                    <option disabled selected value>Elige tu Ubicación</option>
+                                    <option value="1">Mi ubicación</option>
+                                    <option value="2">Otra Ubicación</option>
+                                </select>
+                                <Button
+                                    style={{ height: '68px' }}
+                                    className='bg-blue-400 text-4xl'
+                                    onClick={() => setIsOpenModal(true)}>DETALLA TU PROBLEMA</Button>
+                                {isOpenModal && <DirectRequestModal
+                                    onCloseModal={() => setIsOpenModal(false)}
+                                    isOpen={isOpenModal}
+                                    onUpdateFormValues={handleFormValuesUpdate}
+                                />}
+                            </div>
 
 
 
-                        <button onClick={loadNewMap} className="boton_buscar block w-9/12 font-bold	 text-2xl p-3 mx-auto rounded-md">BUSCAR
-                            ESPECIALISTAS</button>
-                    </form>
+                            <button onClick={loadNewMap} className="boton_buscar block w-9/12 font-bold	 text-2xl p-3 mx-auto rounded-md">BUSCAR
+                                ESPECIALISTAS</button>
+                        </form>
+                    </div>
+                </div>
+
+
+                <div className="container flex mx-auto justify-around w-11/12">
+                    {loadInformation ? (<h1>Cargando</h1>) : (<TechnicalInformation 
+                     formData={{professionAvailabilityId: technicalInformation.professionAvailabilityId,
+                        clientId: dataApiProcedure.clienteId,
+                        serviceTypeAvailabilityId: null,
+                        categoryServiceId:categoryService,
+                        latitude: dataApiProcedure.latitude,
+                        longitude: dataApiProcedure.longitude,
+                        title: formValues.title,
+                        description: formValues.description,
+                        imageUrls: formValues.images}}
+                      technical_id={technicalInformation.technical_id} profession={technicalInformation.profession} name={technicalInformation.name} lastnames={technicalInformation.lastnames} birthDate={technicalInformation.birthDate} categoryServiceId={categoryService} />)}
+
+                    <div className="listadoespecialistas w-4/12 overflow-y-scroll	">
+
+
+                        {technicals.map(opcion => (
+                            <TechnicalDiv name={opcion.name} lastnames={`${opcion.lastname} ${opcion.motherLastname}`} birthDate={opcion.birthDate} 
+                            
+                            btnVer={() => {
+                                const info = {
+                                    professionAvailabilityId: opcion.professionAvailability.id,
+                                    technical_id: opcion.id,
+                                    name: opcion.name,
+                                    lastnames: opcion.lastname + " " + opcion.motherLastname, birthDate: opcion.birthDate,
+                                    profession: opcion.professionAvailability.profession
+                                };
+                                setTechnicalInformation(info)
+                                setLoadInformation(false)
+                                setRenderTechnical(!renderTechnical)
+                            }}
+
+                                btnRequestSolitude={() => {
+                                    const accessToken = localStorage.getItem("access_token");
+
+
+                                    const requestData = {
+                                        professionAvailabilityId: opcion.professionAvailability.id,
+                                        clientId: dataApiProcedure.clienteId,
+                                        serviceTypeAvailabilityId: null,
+                                        categoryServiceId: categoryService,
+                                        latitude: dataApiProcedure.latitude,
+                                        longitude: dataApiProcedure.longitude,
+                                        title: formValues.title,
+                                        description: formValues.description,
+                                        imageUrls: formValues.images
+                                    }
+                                    createServiceRequest(requestData, accessToken)
+                                }} />
+
+
+
+                        ))}
+
+
+
+                    </div>
                 </div>
             </div>
 
-
-            <div className="container flex mx-auto justify-around w-11/12">
-                {loadInformation ? (<h1>Cargando</h1>) : (<TechnicalInformation profession={technicalInformation.profession} name={technicalInformation.name} lastnames={technicalInformation.lastnames} birthDate={technicalInformation.birthDate} />)}
-
-                <div className="listadoespecialistas w-4/12 overflow-y-scroll	">
-
-
-                    {technicals.map(opcion => (
-                        <TechnicalDiv name={opcion.name} lastnames={`${opcion.lastname} ${opcion.motherLastname}`} birthDate={opcion.birthDate} profession={opcion.profession.name} btnVer={() => {
-                            const info = {
-                                name: opcion.name,
-                                lastnames: opcion.lastname + " " + opcion.motherLastname, birthDate: opcion.birthDate,
-                                profession: opcion.profession.name
-                            };
-                            setTechnicalInformation(info)
-                            setLoadInformation(false)
-                            setRenderTechnical(!renderTechnical)
-                        }} />
-
-
-
-                    ))}
-
-
-
-                </div>
-            </div>
         </LayaoutDashboard>
 
     );

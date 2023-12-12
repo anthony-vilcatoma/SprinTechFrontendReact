@@ -1,139 +1,228 @@
 import { LayaoutDashboard } from "../components/LayaoutDashboard";
 import imgPerfil from "../assets/images/perfil.svg"
+import { useEffect, useState } from "react";
+import { getUserInformation } from "../apis/Client/UserApi";
+import { Button, Modal } from 'flowbite-react';
+import ModalAddProfession from "../components/Client/ModalAddProfession";
+import { Link } from "react-router-dom";
+import { render } from "react-dom";
+import { set } from "react-hook-form";
+import ModalUpdateProfession from '../components/Client/ModalUpdateProfession';
+
 const ConfigurationPage = () => {
+    const [technicalId,setTechnicalId] = useState();
+    const [openModal, setOpenModal] = useState(false);
+    const [openUpdateModal, setOpenUpdateModal] = useState(false);
+    const [professionUpdateModal, setProfessionUpdateModal] = useState({});
+
+
+
+
+    const [viewPassword, setViewPassword] = useState(true);
+    const [renderComponent, setRenderComponent] = useState(true);
+
+    const [userInformation, setUserInformation] = useState({
+        name: null,
+        fatherLastname: null,
+        motherLastname: null,
+
+    });
+
+
+    const [professionsUser, setProfessionsUser] = useState([]);
+
+    //Estado dependiente de otro estado, este almacenara las professiones pero evitara que se repitan!
+    const professionNameAndExperience = professionsUser.map(e => {
+        return { id: e.id, profession: e.profession, experience: e.experience, availability: e.availability }
+    })
+
+    console.log(professionNameAndExperience)
+
+
+    const professionMap = new Map();
+    professionNameAndExperience.forEach(item => {
+        const key = `${item.profession.id}_${item.experience.id}`;
+        if (!professionMap.has(key)) {
+            professionMap.set(key, item);
+        } else {
+            const existingItem = professionMap.get(key);
+            existingItem.availability.name = 'Ambas';
+        }
+    });
+
+    const uniqueProfessions = Array.from(professionMap.values());
+
+    console.log("Unique professions", uniqueProfessions);
+
+
+    useEffect(() => {
+        const accessToken = window.localStorage.getItem("access_token");
+        const decodedToken = JSON.parse(atob(accessToken.split('.')[1]));
+        getUserInformation(decodedToken.sub, accessToken)
+            .then(response => {
+                const data = response.data.body
+                setUserInformation({
+                    ...userInformation,
+                    name: data.name,
+                    fatherLastname: data.lastname,
+                    motherLastname: data.motherLastname
+                })
+
+                setProfessionsUser(data.professionsAvailability)
+                setTechnicalId(data.id)
+
+            })
+    }, [renderComponent])
+
+
+
     return (
         <LayaoutDashboard>
             <div style={{ fontFamily: 'Urbanist, sans-serif' }}>
-        
 
-            <main className="px-2 md:px-20 bg-gray-300 pb-12 2xl:px-60">
-                <h1 className="text-2xl font-semibold py-4">Configuraciones de la Cuenta</h1>
 
-                {/* CONTENT */}
-                <div className="bg-white rounded py-3 px-5 sm:px-10 mx-auto max-w-5xl">
-                    <h2 className="text-2xl font-semibold py-4">Mi cuenta</h2>
+                <main className="px-2 md:px-20 bg-gray-300 pb-12 2xl:px-60">
+                    <h1 className="text-2xl font-semibold py-4">Configuraciones de la Cuenta</h1>
 
-                    {/* PROFILE PHOTO */}
-                    <div className="flex flex-row items-center gap-x-5">
-                        <img className="w-24" src={imgPerfil} alt="" />
-                        <button className="h-fit bg-personalized text-white font-semibold rounded px-2 py-1">Cambiar</button>
-                    </div>
+                    {/* CONTENT */}
+                    <div className="bg-white rounded py-3 px-5 sm:px-10 mx-auto max-w-5xl">
+                        <h2 className="text-2xl font-semibold py-4">Mi cuenta</h2>
 
-                    <div className="grid gap-y-2">
+                        {/* PROFILE PHOTO */}
+                        <div className="flex flex-row items-center gap-x-5">
+                            <img className="w-24" src={imgPerfil} alt="" />
+                            <button className="h-fit bg-personalized text-white font-semibold rounded px-2 py-1">Cambiar</button>
+                        </div>
 
-                        <div className="pt-4">
-                            <div className="flex flex-row justify-between gap-y-3 gap-x-5">
+                        <div className="grid gap-y-2">
 
-                                <div className="w-1/3">
-                                    <label htmlFor="" className="block text-sm font-medium leading-6 text-gray-900">Nombre</label>
-                                    <input type="text" placeholder="Nombre" className="w-full rounded-md border-0 py-1.5 pl-7 pr-5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                </div>
-                                <div className="w-1/3">
-                                    <label htmlFor="" className="block text-sm font-medium leading-6 text-gray-900">Ap. Paterno</label>
-                                    <input type="text" placeholder="Nombre" className="w-full rounded-md border-0 py-1.5 pl-7 pr-5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                </div>
-                                <div className="w-1/3">
-                                    <label htmlFor="" className="block text-sm font-medium leading-6 text-gray-900">Ap. Materno</label>
-                                    <input type="text" placeholder="Nombre" className="w-full rounded-md border-0 py-1.5 pl-7 pr-5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                            <div className="pt-4">
+                                <div className="flex flex-row justify-between gap-y-3 gap-x-5">
+
+                                    <div className="w-1/3">
+                                        <label htmlFor="" className="block text-sm font-medium leading-6 text-gray-900">Nombre</label>
+                                        <input type="text" placeholder="Nombre" value={userInformation.name} className="w-full rounded-md border-0 py-1.5 pl-7 pr-5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    </div>
+                                    <div className="w-1/3">
+                                        <label htmlFor="" className="block text-sm font-medium leading-6 text-gray-900">Ap. Paterno</label>
+                                        <input type="text" placeholder="Nombre" value={userInformation.fatherLastname} className="w-full rounded-md border-0 py-1.5 pl-7 pr-5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    </div>
+                                    <div className="w-1/3">
+                                        <label htmlFor="" className="block text-sm font-medium leading-6 text-gray-900">Ap. Materno</label>
+                                        <input type="text" placeholder="Nombre" value={userInformation.motherLastname} className="w-full rounded-md border-0 py-1.5 pl-7 pr-5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    </div>
+
                                 </div>
 
                             </div>
-                            
-                        </div>
 
                             {/* CONTRASEÑA */}
-                        <div>
-                            <h2 className="text-2xl font-semibold pt-4">Contraseña</h2>
-                            <p className="text-gray-400 text-sm font-medium">
-                                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.
-                            </p>
-
-                            <label htmlFor="" className="block text-sm font-medium leading-6 text-gray-900">Nombre</label>
-                            <div className="flex flex-wrap gap-2 ">
-                                <input type="password" placeholder="**********" className="rounded-md border-0 py-1.5 pl-7 pr-5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <button className="px-3 py-1 rounded border border-slate-300">
-                                    <span className="font-medium text-amber-600">Ver</span>
-                                </button>
-                                <button className="px-3 py-1 rounded border border-slate-300">
-                                    <span className="font-medium text-slate-800">Cambiar</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="flex flex-row">
-
-                            {/* PROFESSIONES Y EXPERIENCIA */}
-                            <div className="w-1/2">
-                                <h2 className="text-2xl font-semibold pt-4">Profesiones y experiencia</h2>
-                                <p className="text-gray-400 text-sm font-medium mb-3">
-                                    Excepteur sint occaecat cupidatat non proident.
-                                </p>
-                                <div className="flex flex-row gap-x-3">
-                                    <div>
-                                        <button className="px-3 py-1 rounded border border-slate-300">
-                                            <span className="font-medium text-amber-600">Agregar</span>
-                                        </button>
-                                    </div>
-                                    <div className="flex flex-wrap gap-x-2">
-                                            <div className="flex flex-col gap-y-2">
-                                                <div className="border inline-block py-1 px-3 rounded-full ">
-                                                    <span className="mr-2">Mecanico / Ingeniero</span>
-                                                    <i className='bx bxs-edit inline-block align-middle' style={{color:'#1e293b'}}></i>
-                                                    <i className='bx bx-trash inline-block align-middle' style={{color:'#1e293b'}}></i>
-                                                </div>
-                                                <div className="border inline-block py-1 px-3 rounded-full ">
-                                                    <span className="mr-2">Mecanico / Ingeniero</span>
-                                                    <i className='bx bxs-edit inline-block align-middle' style={{color:'#1e293b'}}></i>
-                                                    <i className='bx bx-trash inline-block align-middle' style={{color:'#1e293b'}}></i>
-                                                </div>
-                                            </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* DISPONIBILIDAD */}
-                            <div className="w-1/2">
-                                <h2 className="text-2xl font-semibold pt-4">Disponibilidad</h2>
+                            <div>
+                                <h2 className="text-2xl font-semibold pt-4">Contraseña</h2>
                                 <p className="text-gray-400 text-sm font-medium">
                                     Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.
                                 </p>
 
-                                <label className="block text-sm font-medium leading-6 text-gray-900">Nombre</label>
+                                <label htmlFor="" className="block text-sm font-medium leading-6 text-gray-900">Nombre</label>
                                 <div className="flex flex-wrap gap-2 ">
-                                    <select name="availabilityId"
-                                        className="p-2 block w-6/12 border-gray-200 rounded-md text-base 	
-                                        focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 text-gray-400 "
-                                    >
-                                        <option value="" selected disabled>Elija una disponibilidad</option>
-                                        <option value="1">En taller</option>
-                                    </select>
+                                    <input type={viewPassword ? "password" : "text"} placeholder="**********" className="rounded-md border-0 py-1.5 pl-7  pr-5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <button className="px-3 py-1 rounded border border-slate-300">
-                                        <span className="font-medium text-gray-500">Editar</span>
+                                        <span className="font-medium text-amber-600" onClick={() => {
+                                            setViewPassword(!viewPassword);
+                                        }}>Ver</span>
+                                    </button>
+                                    <button className="px-3 py-1 rounded border border-slate-300">
+                                        <span className="font-medium text-slate-800">Cambiar</span>
                                     </button>
                                 </div>
                             </div>
+
+                            <div className="flex flex-row">
+
+                                {/* PROFESSIONES Y EXPERIENCIA */}
+                                <div className="w-3/5">
+                                    <h2 className="text-2xl font-semibold pt-4">Profesiones y experiencia</h2>
+                                    <p className="text-gray-400 text-sm font-medium mb-3">
+                                        Excepteur sint occaecat cupidatat non proident.
+                                    </p>
+                                    <div className="flex flex-row gap-x-3">
+                                        <div>
+                                            <button className="px-3 py-2 rounded bg-personalized text-white hover:bg-blue-400" onClick={() => setOpenModal(true)}>Agregar Profession</button>
+                                            {openModal ? <ModalAddProfession technicalId={technicalId} professionsExistAlready={professionsUser} reloadComponent={() => { setRenderComponent(!renderComponent) }} open={() => setOpenModal(true)} close={() => setOpenModal(false)} /> : ""}
+                                        </div>
+                                       
+                                    </div>
+                                </div>
+
+                                {/* DISPONIBILIDAD */}
+                                <div className="w-3/4">
+                                    <div className=" overflow-x-auto h-60 shadow-md sm:rounded-lg">
+                                        <div className="overflow-x-auto  shadow-md sm:rounded-lg">
+                                            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                                    <tr>
+                                                        <th scope="col" className="py-3 px-6">Profession</th>
+                                                        <th scope="col" className="py-3 px-6">Experiencia</th>
+                                                        <th scope="col" className="py-3 px-6">Disponibilidad</th>
+                                                        <th scope="col" className="py-3 px-6">Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        uniqueProfessions.map(element =>
+                                                        (<tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                            <td className="py-4 px-6">{element.profession.name}</td>
+                                                            <td className="py-4 px-6">{element.experience.name}</td>
+                                                            <td className="py-4 px-6">{element.availability.name}</td>
+                                                            <td className="py-4 px-6">
+                                                                <button onClick={() => {
+                                                                    setOpenUpdateModal(true);
+                                                                    setProfessionUpdateModal({
+                                                                        id: element.id
+                                                                    })
+                                                                }}><i className='bx bxs-edit inline-block align-middle' style={{ color: '#1e293b' }}></i></button>
+
+                                                                <i className='bx bx-trash inline-block align-middle' style={{ color: '#1e293b' }}></i>
+                                                            </td>
+                                                        </tr>)
+                                                        )
+
+                                                    }
+
+                                                    {openUpdateModal ? <ModalUpdateProfession professionAvailabilityId={professionUpdateModal.id} reloadComponent={() => { setRenderComponent(!renderComponent) }} open={() => setOpenUpdateModal(true)} close={() => setOpenUpdateModal(false)} /> : ""}
+
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+
+
+                            <hr className="my-3" />
+
+                            <div className="flex justify-end gap-x-4 mb-2">
+                                <button className="px-3 py-1 rounded border border-slate-300">
+                                    <span className="font-medium text-slate-800">Cancelar</span>
+                                </button>
+                                <button className="px-3 py-1 rounded bg-personalized">
+                                    <span className="font-medium text-slate-100">Salvar</span>
+                                </button>
+                            </div>
+
+
+
+
+
                         </div>
-
-
-                        <hr className="my-3" />
-
-                        <div className="flex justify-end gap-x-4 mb-2">
-                            <button className="px-3 py-1 rounded border border-slate-300">
-                                <span className="font-medium text-slate-800">Cancelar</span>
-                            </button>
-                            <button className="px-3 py-1 rounded bg-personalized">
-                                <span className="font-medium text-slate-100">Salvar</span>
-                            </button>
-                        </div>
-
-
-
-
-                        
                     </div>
-                </div>
-                {/* END CONTENT */}
-            </main>
+                    {/* END CONTENT */}
+                </main>
             </div>
         </LayaoutDashboard>
     );

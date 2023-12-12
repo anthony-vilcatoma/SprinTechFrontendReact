@@ -9,7 +9,10 @@ import { AnswerSuportPage } from './pages/Admin/AnswerSuportPage';
 import ProtectedRoute from "./ProtectedRoute"
 import { TicketsPage } from './pages/Admin/TicketsPage';
 import ConfigurationPage from './pages/ConfigurationPage';
-
+import TechnicalServicePage from './pages/Client/TechnicalServicePage';
+import RequestClientsPage from './pages/Technical/RequestClientsPage';
+import ClientPetitiosPage from './pages/Client/ClientPetitiosPage';
+import '../src/index.css'
 
 
 function App() {
@@ -26,9 +29,12 @@ function App() {
           <Route element={<ProtectedRoute/>} >
             <Route path="/configuration"  element={<ConfigurationPage/>}/>
             <Route path="/service"element={<ServicePage />} />
+            <Route  path="/requestClientView" element={<RequestClientsPage/>}/>
+            <Route  path="/mypetitions" element={<ClientPetitiosPage/>}/>
             <Route path="/supportList" element={<TicketsPage/>}/>
             <Route  path="/ticketsupport" element={<TicketSupportPage/>}/>
             <Route path='/atenttion/:id' element={<AnswerSuportPage/>}/>
+            <Route path='/service/configuration' element={<TechnicalServicePage/>}/>
           </Route>
         </Routes>
       </BrowserRouter>

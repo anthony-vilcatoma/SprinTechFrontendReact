@@ -215,9 +215,28 @@ body.dark .sidebar li a:hover .text{
     justify-content: space-between;
     overflow-y: scroll;
 }
+
+::-webkit-scrollbar {
+    width: 10px;
+    margin-right: 100px !important;
+  }
+  
+  ::-webkit-scrollbar-track {
+  background-color: #f1f1f1; 
+  }
+  
+  ::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 5px; 
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+  }
 .menu-bar::-webkit-scrollbar{
     display: none;
 }
+
 .sidebar .menu-bar .mode{
     border-radius: 6px;
     background-color: var(--primary-color-light);
@@ -309,85 +328,3 @@ body.dark .home .text{
 }
 
 
-
-
-body{
-    margin: auto;
-    padding: 0;
-    height: 100vh;
-}
-
-.form-select-map{
-    background-color: #F3F4F6;
-    color: #ADADAD;
-}
-.map-form{
-    height: 600px;
-}
-.help{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.boton_buscar{
-    color: #fff;
-    background-color: #CB7930;
-}
-
-.specialist-all{
-    height: 52.7rem;
-       width: 655px;
-}
-.information ul li{
-    margin-bottom: 2.4rem;
-    text-align: center;
-}
-.borde-comentario{
-    margin-top: 6px;
-    border: 6px solid #D9D9D9 ;
-}
-.comentario{
-    font-size: 1.8rem;
-}
-
-
-
-.card-son{
-    height: 23.7rem;
-}
-.habilities{
-    background-color: #F3F4F6;
-}
-.card-son{
-    background-color: #F3F4F6;
-
-}
-.comentary{
-    width: 20rem;
-
-}
-.porcent{
-    background-color: #D9D9D9;
-}
-
-
-.listadoespecialistas{
-    height: 52.7rem;
-}
-
-.information-request ul li{
-    margin-bottom: 0.5rem;
-    text-align: center;
-}
-
-.ver{
-    background-color: #ADADAD;
-    color: white;
-}
-.solicitar{
-    background-color: #CB7930;
-    color: white;
-}
-::-webkit-scrollbar {
-    display: none;
-}

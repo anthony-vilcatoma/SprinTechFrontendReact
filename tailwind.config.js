@@ -6,7 +6,11 @@ export default {
     "node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      height: {
+        '110': '30rem', // Define una clase h-110 que tendrá una altura de 30rem (110 pixels)
+      },
+    },
   },
   plugins: [require('flowbite/plugin')],
 }
