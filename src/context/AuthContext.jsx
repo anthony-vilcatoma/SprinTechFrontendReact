@@ -33,15 +33,17 @@ export const AuthProvider = ({children}) => {
 
   const login = async (user) => {
     try {
+      console.log("LOGIN API SPRINGBOOT");
       const res = await loginRequest(user)
-      console.log(res)
       // Enviar token al LOCAL STORAGE
       const {token} = res.data.body
       localStorage.setItem("access_token", token);
-      
       setAuthenticated(true)
+      return res;
+
     } catch (error) {
       console.log(error)
+      return error;
       // Agregar los errores a un useState
     }
   }
@@ -66,6 +68,7 @@ export const AuthProvider = ({children}) => {
     // Remover token del LOCAL STORAGE
     localStorage.removeItem("access_token")
     setAuthenticated(false)
+
   }
 
    // MOSTRAR ERRORES 5 SEGUNDOS
@@ -114,8 +117,14 @@ export const AuthProvider = ({children}) => {
         setLoading(false)
       }
     }
+    const access_token = localStorage.getItem("access_token")
+    if (access_token){
+      const decodedToken = JSON.parse(atob(access_token.split('.')[1]));
+      if (decodedToken.roleId in [2,1]){
+        checkLogin()
+      }
+    }
     // EJECUTAMOS LA FUNCION ASINCRONA
-    checkLogin()
   },[])  
 
 
@@ -123,6 +132,7 @@ export const AuthProvider = ({children}) => {
     <AuthContext.Provider value={{
       // Todos los componentes hijos podrán utilizar:
       login,
+      setAuthenticated,
       isAuthenticated,
       loading,
       logout,

@@ -8,59 +8,60 @@ export function LoginFormPage() {
         password: ""
     });
     const navigate = useNavigate();
-    const { isAuthenticated, login, checkoutLogin } = useAuth();
+    const { isAuthenticated,setAuthenticated, login, checkoutLogin } = useAuth();
     console.log("AUTHENTICATE: "+ isAuthenticated)
     // Cuando se authentique navegará a /service
     useEffect( () => {
         if (isAuthenticated){
             const accessToken =  window.localStorage.getItem("access_token")
-        const decodedToken = JSON.parse(atob(accessToken.split('.')[1]));
+            const decodedToken = JSON.parse(atob(accessToken.split('.')[1]));
             const role = decodedToken.roleId;
             if(role==1){
                 navigate('/service')
-            }
-            if(role==2){
+            }        
+            else if(role==2){
                 navigate('/requestClientView')
             }
-        } 
+            else{
+                navigate('/atenttion/1')
+            }
+        }
     },[isAuthenticated]) // se ejecutará si isAuthenticated cambia
 
     const handleFormSubmit = async (event) => {
         event.preventDefault();
 
         try {
-            const response = await fetch("http://localhost:8000/api/admin/authenticate/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-
-                },
-                body: JSON.stringify(formData)
-            });
-
-            if (response.ok) {
-                // La solicitud fue exitosa, puedes manejar la respuesta aquí
-                const data = await response.json();
-                if(data.access_token){
-                    // Guardar el token de acceso en localStorage
-                    localStorage.setItem("access_token", data.access_token);
-                    // Guardar el token de actualización en localStorage
-                    localStorage.setItem("refresh_token", data.refresh_token);
-                    console.log("ADMIN INGRESADO");
-                    console.log(data);
-
-
-                }else {
-                   // LOGIN API USER
-                    login(JSON.stringify(formData))
-      
+            // AUTHENTICAMOS EN SPRING BOOT
+            const res = await login(JSON.stringify(formData));
+            
+            // CASO CONTRARIO AUTHENTICAMOS EN DJANGO
+            if (res.status !== 200){
+                const response = await fetch("http://localhost:8000/api/admin/authenticate/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData)
+                });
+                if (response.ok) {
+                    // La solicitud fue exitosa, puedes manejar la respuesta aquí
+                    const data = await response.json();
+                    if(data.access_token){
+                        // Guardar el token de acceso en localStorage
+                        localStorage.setItem("access_token", data.access_token);
+                        // Guardar el token de actualización en localStorage
+                        localStorage.setItem("refresh_token", data.refresh_token);
+                        setAuthenticated(true);
+                    }
+                                        
                 }
-                
-                
             } 
-        } catch (error) {
+        }
+        catch (error) {
             console.error("Error al procesar la solicitud:", error);
         }
+
     };
 
     // un evento representa todo cambio en html(input,click etc)

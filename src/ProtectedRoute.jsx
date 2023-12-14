@@ -7,10 +7,10 @@ function ProtectedRoute() {
   const { isAuthenticated, loading } = useAuth();
   console.log("AUTHENTICADO: "+isAuthenticated)
   // Si se carga la pagina, utilizar un componente
-  if (loading) return <h1>Loading ...</h1>
 
   // Si no se esta cargando la pagina y no esta authenticado
   if (!loading && !isAuthenticated) {
+     console.log("Redirige a login")
     // replace: reemplazará la ruta a /login si es que se intenta retroceder(en caso acaba de hacer LOGOUT)
     return <Navigate to='/login' replace />
   }
