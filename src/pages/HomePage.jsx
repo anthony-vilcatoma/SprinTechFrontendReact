@@ -4,6 +4,7 @@ import imagenLogo from '../assets/images/logo-springtec.svg'; // Importa la imag
 import imagenTecnicos1 from '../assets/images/tecnicos1.svg'; // Importa la imagen de tecnicos1
 import imagenTestimonio1 from '../assets/images/testimonio1.svg'; // Importa la imagen de testimonio1
 import imagenEstrellas from '../assets/images/img-estrellas.svg'; // Importa la imagen de estrellas
+import { Link } from 'react-router-dom';
 
 export const HomePage = () => {
   return (
@@ -17,17 +18,18 @@ export const HomePage = () => {
             <div className="flex flex-row items-center">
               <ul className="flex gap-x-10 mr-10 font-semibold text-gray-500">
                 <li className="hover:text-gray-400">Home</li>
-                <li className="hover:text-gray-400">Home</li>
-                <li className="hover:text-gray-400">Home</li>
-                <li className="hover:text-gray-400">Home</li>
+                <li className="hover:text-gray-400">About</li>
+                <li className="hover:text-gray-400">Services</li>
+                <li className="hover:text-gray-400">Contact</li>
               </ul>
               <div>
-                <a href="" className="bg-personalized rounded px-4 py-1.5 text-white font-semibold mr-1">
-                  Button
-                </a>
-                <a href="" className="bg-personalized rounded px-4 py-1.5 text-white font-semibold">
-                  Button
-                </a>
+                <Link to={"/login"} className="bg-personalized rounded px-4 py-1.5 text-white font-semibold mr-1">
+                Login
+
+                </Link>
+                <Link to={"/register"} className="bg-personalized rounded px-4 py-1.5 text-white font-semibold">
+                  Register
+                </Link>
               </div>
             </div>
           </nav>

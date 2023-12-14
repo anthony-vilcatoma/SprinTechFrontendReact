@@ -59,13 +59,13 @@ export function ModalTarifaComponent({ onClose, directRequest }) {
         // Puedes usar el índice para identificar el material a editar en la lista materiales
         // Por ejemplo: actualizando el estado 'formMaterial' con los datos del material seleccionado
     };
-    
+
     const handleDelete = (index) => {
         const newMateriales = [...materiales];
         newMateriales.splice(index, 1);
         setMateriales(newMateriales);
     };
-    
+
     useEffect(() => {
         // Check if the Google Maps script is already loaded
         if (!window.google) {
@@ -203,24 +203,24 @@ export function ModalTarifaComponent({ onClose, directRequest }) {
                                             </tr>
                                         </thead>
                                         <tbody className=''>
-    {
-        materiales.map((element, index) => (
-            <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                <td className="py-4 px-6">{element.name}</td>
-                <td className="py-4 px-6">{element.price}</td>
-                <td className="py-4 px-6">{element.stock}</td>
-                <td className="py-4 px-6">
-                    <button onClick={() => handleEdit(index)}>
-                        <i className='bx bxs-edit inline-block align-middle' style={{ color: '#1e293b' }}></i>
-                    </button>
-                    <button onClick={() => handleDelete(index)}>
-                        <i className='bx bx-trash inline-block align-middle' style={{ color: '#1e293b' }}></i>
-                    </button>
-                </td>
-            </tr>
-        ))
-    }
-</tbody>
+                                            {
+                                                materiales.map((element, index) => (
+                                                    <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                        <td className="py-4 px-6">{element.name}</td>
+                                                        <td className="py-4 px-6">{element.price}</td>
+                                                        <td className="py-4 px-6">{element.stock}</td>
+                                                        <td className="py-4 px-6">
+                                                            <button onClick={() => handleEdit(index)}>
+                                                                <i className='bx bxs-edit inline-block align-middle' style={{ color: '#1e293b' }}></i>
+                                                            </button>
+                                                            <button onClick={() => handleDelete(index)}>
+                                                                <i className='bx bx-trash inline-block align-middle' style={{ color: '#1e293b' }}></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            }
+                                        </tbody>
 
                                     </table>
                                 </div>

@@ -16,7 +16,7 @@ export default function DropDownStateRequest({changeRequests}) {
     }
 
     const loadAllDirectRequestNoInvoce = () =>{
-        const token = window.localStorage.getItem("access_token")
+        const token = window.localStorage.getItem("ac   cess_token")
         showAllDirectRequestToOneTechnical(token,1,1)
         .then(res=>
             {
@@ -24,7 +24,7 @@ export default function DropDownStateRequest({changeRequests}) {
             })
     }
     return (
-        <div className="self-end mb-2">
+        <div className=" self-end w-fit content-end mb-2">
             <Dropdown label="Seleccione el tipo de solicitud" dismissOnClick={true}>
                 <Dropdown.Item onClick={loadAllDirectRequestNoInvoce}>Solicitudes Recientes</Dropdown.Item>
                 <Dropdown.Item onClick={loadAllAlreadyInvoice}>Solicitadas Tarifadas</Dropdown.Item>

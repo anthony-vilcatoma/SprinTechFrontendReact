@@ -3,6 +3,7 @@ import { showAllDirectRequestToOneTechnical } from '../../apis/Client/DirectRequ
 import ClientCardProblem from './ClientCardProblem';
 import { MapComponent } from '../Client/MapComponenet';
 import DropDownStateRequest from './DropDownStateRequest';
+import { ProblemClientComponent } from '../Client/ProblemClientComponent';
 
 export default function ClientPetition({ technicalId }) {
   const [requestClients, setRequestClients] = useState([]);
@@ -16,18 +17,21 @@ export default function ClientPetition({ technicalId }) {
   }, [])
   return (
     <>
+    
+    <DropDownStateRequest changeRequests={(requestDirects)=>{
+            setRequestClients(requestDirects)
+          }}/>    
       <div className="flex justify-between h-full  mt-10 w-11/12 mx-auto">
         <div className="w-5/12 rounded-lg h-4/5	bg-gray-400">
           <MapComponent/>
         </div>
-        <div className="w-5/12 flex flex-col h-full">
+        
+        <div className="w-11/12 flex flex-col h-full">
           
-          <DropDownStateRequest changeRequests={(requestDirects)=>{
-            setRequestClients(requestDirects)
-          }}/>
+          
           <div className="overflow-y-auto pr-3">
 
-          {requestClients.map(element => <ClientCardProblem directRequest={element} />
+          {requestClients.map(element => <ProblemClientComponent typeModal={"Technical"} e={element} />
           )}
 
         </div>

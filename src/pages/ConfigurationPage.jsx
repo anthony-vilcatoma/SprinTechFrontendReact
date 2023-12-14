@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { render } from "react-dom";
 import { set } from "react-hook-form";
 import ModalUpdateProfession from '../components/Client/ModalUpdateProfession';
+import { updateTechnicalInformation } from "../apis/Client/TechnicalsApi";
 
 const ConfigurationPage = () => {
     const [technicalId,setTechnicalId] = useState();
@@ -23,12 +24,24 @@ const ConfigurationPage = () => {
 
     const [userInformation, setUserInformation] = useState({
         name: null,
-        fatherLastname: null,
+        lastname: null,
         motherLastname: null,
-
+        birthDate:null,
+        latitude:null,
+        longitude:null
     });
 
+    const changeDataUserInformation = (event) =>{
+        const {name,value} = event.target;
+        setUserInformation({...userInformation,[name]:value});
+    }
 
+    const updateUserInformation =()=>{
+        const accessToken = window.localStorage.getItem("access_token")
+        updateTechnicalInformation(accessToken,userInformation,technicalId)
+        .then(res=>console.log(res.data.body))
+        
+    }
     const [professionsUser, setProfessionsUser] = useState([]);
 
     //Estado dependiente de otro estado, este almacenara las professiones pero evitara que se repitan!
@@ -61,11 +74,16 @@ const ConfigurationPage = () => {
         getUserInformation(decodedToken.sub, accessToken)
             .then(response => {
                 const data = response.data.body
+                console.log("user",data);
+                let date = new Date(data.birthDate);
                 setUserInformation({
                     ...userInformation,
                     name: data.name,
-                    fatherLastname: data.lastname,
-                    motherLastname: data.motherLastname
+                    lastname: data.lastname,
+                    motherLastname: data.motherLastname,
+                    birthDate:date,
+                    latitude:data.latitude,
+                    longitude:data.longitude
                 })
 
                 setProfessionsUser(data.professionsAvailability)
@@ -91,7 +109,7 @@ const ConfigurationPage = () => {
                         {/* PROFILE PHOTO */}
                         <div className="flex flex-row items-center gap-x-5">
                             <img className="w-24" src={imgPerfil} alt="" />
-                            <button className="h-fit bg-personalized text-white font-semibold rounded px-2 py-1">Cambiar</button>
+                            <button onClick={updateUserInformation} className="h-fit bg-personalized text-white font-semibold rounded px-2 py-1">Actualizar Datos</button>
                         </div>
 
                         <div className="grid gap-y-2">
@@ -101,15 +119,15 @@ const ConfigurationPage = () => {
 
                                     <div className="w-1/3">
                                         <label htmlFor="" className="block text-sm font-medium leading-6 text-gray-900">Nombre</label>
-                                        <input type="text" placeholder="Nombre" value={userInformation.name} className="w-full rounded-md border-0 py-1.5 pl-7 pr-5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                        <input onChange={changeDataUserInformation} type="text" placeholder="Nombre" value={userInformation.name} name="name" className="w-full rounded-md border-0 py-1.5 pl-7 pr-5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     </div>
                                     <div className="w-1/3">
                                         <label htmlFor="" className="block text-sm font-medium leading-6 text-gray-900">Ap. Paterno</label>
-                                        <input type="text" placeholder="Nombre" value={userInformation.fatherLastname} className="w-full rounded-md border-0 py-1.5 pl-7 pr-5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                        <input type="text" name="lastname" onChange={changeDataUserInformation} placeholder="Nombre" value={userInformation.lastname} className="w-full rounded-md border-0 py-1.5 pl-7 pr-5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     </div>
                                     <div className="w-1/3">
                                         <label htmlFor="" className="block text-sm font-medium leading-6 text-gray-900">Ap. Materno</label>
-                                        <input type="text" placeholder="Nombre" value={userInformation.motherLastname} className="w-full rounded-md border-0 py-1.5 pl-7 pr-5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                        <input type="text" onChange={changeDataUserInformation} name="motherLastname" placeholder="Nombre" value={userInformation.motherLastname} className="w-full rounded-md border-0 py-1.5 pl-7 pr-5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     </div>
 
                                 </div>
@@ -146,8 +164,10 @@ const ConfigurationPage = () => {
                                         Excepteur sint occaecat cupidatat non proident.
                                     </p>
                                     <div className="flex flex-row gap-x-3">
-                                        <div>
+                                        <div className="flex">
                                             <button className="px-3 py-2 rounded bg-personalized text-white hover:bg-blue-400" onClick={() => setOpenModal(true)}>Agregar Profession</button>
+
+                                            <Link to={"/service/configuration"} className="ml-5 px-3 py-2 rounded bg-personalized text-white hover:bg-gray-400">Ver tus Servicios</Link>
                                             {openModal ? <ModalAddProfession technicalId={technicalId} professionsExistAlready={professionsUser} reloadComponent={() => { setRenderComponent(!renderComponent) }} open={() => setOpenModal(true)} close={() => setOpenModal(false)} /> : ""}
                                         </div>
                                        
@@ -189,7 +209,7 @@ const ConfigurationPage = () => {
 
                                                     }
 
-                                                    {openUpdateModal ? <ModalUpdateProfession professionAvailabilityId={professionUpdateModal.id} reloadComponent={() => { setRenderComponent(!renderComponent) }} open={() => setOpenUpdateModal(true)} close={() => setOpenUpdateModal(false)} /> : ""}
+                                                    {openUpdateModal ? <ModalUpdateProfession tecnicoId={technicalId} professionAvailabilityId={professionUpdateModal.id} reloadComponent={() => { setRenderComponent(!renderComponent) }} open={() => setOpenUpdateModal(true)} close={() => setOpenUpdateModal(false)} /> : ""}
 
 
                                                 </tbody>

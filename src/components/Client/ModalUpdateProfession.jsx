@@ -4,8 +4,9 @@ import { getExperiences } from '../../apis/Client/ExperienceApi';
 import { getAvailabilities } from '../../apis/Client/AvailavilityApi';
 import { MapComponent } from './MapComponenet';
 import { createProfession, deleteProfessionAvailabilityById, getAllProfessionByTechnical, getProfessionByAvailabilityFromId, getProfessionsAvaialbilitiesByTechnicalIdAndProfessionId, updateProfessionByAvailability } from '../../apis/Client/ProfessionApi';
+import { getUserInformation } from '../../apis/Client/UserApi';
 
-export default function ModalUpdateProfession({ open, close, reloadComponent,professionAvailabilityId}) {
+export default function ModalUpdateProfession({ tecnicoId,open, close, reloadComponent,professionAvailabilityId}) {
 
     const [availabilities, setAvailabilites] = useState([]);
     const [experiences, setExperiences] = useState([]);
@@ -47,7 +48,7 @@ export default function ModalUpdateProfession({ open, close, reloadComponent,pro
     const submitForm = async() => {
         const token = window.localStorage.getItem("access_token")
         const decodedToken = JSON.parse(atob(token.split('.')[1]));
-        const tecnicoId = decodedToken.sub
+        
         try {
 
             //Si availability es a domicilio
@@ -149,6 +150,7 @@ export default function ModalUpdateProfession({ open, close, reloadComponent,pro
                 else if (ProfessionAvailabilityData.availabilityId==1) {
                     //actualizamos el registro de " a domicilio"
                     updateProfessionByAvailability  (token, {
+                        technicalId:tecnicoId,
                         professionId: formData.professionId,
                         availabilityId: 1,
                         experienceId: formData.experienceId,
@@ -156,6 +158,7 @@ export default function ModalUpdateProfession({ open, close, reloadComponent,pro
 
                     //añade un nuevo registro para local
                     createProfession(token, {
+                        technicalId:tecnicoId,
                         professionId: formData.professionId,
                         availabilityId: 2,
                         experienceId: formData.experienceId,
@@ -172,6 +175,7 @@ export default function ModalUpdateProfession({ open, close, reloadComponent,pro
                 else if(ProfessionAvailabilityData.availabilityId==2){
                     //actualizamos la informacion de taller par que se igual al que vamos a crear del otro tipo
                     updateProfessionByAvailability(token, {
+                        technicalId:tecnicoId,
                         professionId: formData.professionId,
                         availabilityId: 2,
                         experienceId: formData.experienceId,
@@ -183,6 +187,7 @@ export default function ModalUpdateProfession({ open, close, reloadComponent,pro
 
                     //creamos un nuevo registro con availability "a domicilio"
                     createProfession(token, {
+                        technicalId:tecnicoId,
                         professionId: formData.professionId,
                         availabilityId: 1,
                         experienceId: formData.experienceId

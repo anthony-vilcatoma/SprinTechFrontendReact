@@ -12,3 +12,11 @@ export const getServicesByCategorylByProfession =  (token,professionId,categoryS
 
 export const updateWorkingStatus = (token,technicalId,dataState) => axios.put(`technical/${technicalId}/update-workingstatus`,dataState,
 {headers:{Authorization:`Bearer ${token}`}})
+
+
+export const updateTechnicalInformation = (token,form,technicalId) => axios.put(`technical/${technicalId}`,form,
+{headers:{Authorization:`Bearer ${token}`}})
+
+
+export const updateTechnicalUbication = (token,form,technicalId) => axios.put(`technical/${technicalId}/update-location`,form,
+{headers:{Authorization:`Bearer ${token}`}})

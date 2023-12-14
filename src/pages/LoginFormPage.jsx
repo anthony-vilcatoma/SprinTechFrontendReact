@@ -12,7 +12,17 @@ export function LoginFormPage() {
     console.log("AUTHENTICATE: "+ isAuthenticated)
     // Cuando se authentique navegará a /service
     useEffect( () => {
-        if (isAuthenticated) navigate('/service')
+        if (isAuthenticated){
+            const accessToken =  window.localStorage.getItem("access_token")
+        const decodedToken = JSON.parse(atob(accessToken.split('.')[1]));
+            const role = decodedToken.roleId;
+            if(role==1){
+                navigate('/service')
+            }
+            if(role==2){
+                navigate('/requestClientView')
+            }
+        } 
     },[isAuthenticated]) // se ejecutará si isAuthenticated cambia
 
     const handleFormSubmit = async (event) => {
