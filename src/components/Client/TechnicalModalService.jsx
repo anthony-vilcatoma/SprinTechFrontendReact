@@ -76,20 +76,20 @@ export default function TechnicalModalService({ open, close, professionId,render
                 <form className="flex" onSubmit={submitForm}>
                     <div className="form-service-detail w-6/12 h-fit	 mr-5">
                         <label htmlFor="">Ingrese nombre de su servicio</label>
-                        <input onChange={handleInputChange} type="text" name="name"
+                        <input required onChange={handleInputChange} type="text" name="name"
                             className="  mb-5 p-2 block w-full border-gray-200 bg-gray-200 rounded-md text-base 	
                                                                 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 "
                         />
 
                         <label htmlFor="">Ingrese descripción de su servicio</label>
-                        <textarea name="description" onChange={handleInputChange} className="h-32 resize-none bg-gray-200  p-2 block w-full border-gray-200 rounded-md text-base 	
+                        <textarea required name="description" onChange={handleInputChange} className="h-32 resize-none bg-gray-200  p-2 block w-full border-gray-200 rounded-md text-base 	
                             focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 mb-5 dark:border-gray-700 dark:text-gray-400 "
                             id="" cols="30" rows="10"></textarea>
 
 
 
                         <label htmlFor="">Seleccione la Categoria</label>
-                        <select onChange={handleInputChange}
+                        <select required onChange={handleInputChange}
                             name='categoryServiceId'
                             className="   bg-gray-200 mb-5 p-2 block w-full border-gray-200 rounded-md text-base 	
                             focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400   ">
@@ -103,7 +103,7 @@ export default function TechnicalModalService({ open, close, professionId,render
                             <div className="block w-6/12">
                                 <label htmlFor="">Precio del servicio</label>
                                 <div className="flex  w-6/12">
-                                    <select onChange={handleInputChange}
+                                    <select required onChange={handleInputChange}
                                         name=''
                                         className=" bg-gray-200 w-16 mr-3 mb-5 p-2 block  border-gray-200 rounded-md text-base 	
                                 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400   ">
@@ -112,7 +112,7 @@ export default function TechnicalModalService({ open, close, professionId,render
                                         <option value="7"></option>
                                         <option value="10">10 Kilometros</option>
                                     </select>
-                                    <input type="text" onChange={handleInputChange}
+                                    <input required type="text" onChange={handleInputChange}
                                         placeholder="price"
                                         name='price'
                                         className="bg-gray-200 p-2 block  w-24 border-gray-200 rounded-md text-base   focus:border-blue-500 mb-5 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 "
@@ -122,7 +122,7 @@ export default function TechnicalModalService({ open, close, professionId,render
                             <div className="w-6/12">
                                 <label htmlFor="">Disponibilidad</label>
                                 <div className="flex">
-                                    <select onChange={handleInputChange}
+                                    <select required onChange={handleInputChange}
                                         name='professionAvailabilityId'
                                         className=" bg-gray-200  mb-5 p-2 block w-full border-gray-200 rounded-md text-base 	
                             focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400   ">
@@ -161,6 +161,7 @@ export default function TechnicalModalService({ open, close, professionId,render
                         <div className="">
                             <input id='fileInput'
                                 type="file"
+                                required
                                 accept="image/*"
                                 className="bg-gray-300 block mx-auto rounded-md w-full mb-8"
                                 onChange={handleImageChange}

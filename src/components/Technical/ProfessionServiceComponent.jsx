@@ -32,15 +32,6 @@ export default function ProfessionServiceComponent({ professionId,professionName
                         services.map(e => <ServiceCardComponent serviceObject={e}/>
                         )
                     }
-
-
-
-
-
-
-
-
-
                 </div>
             </div>
         </>

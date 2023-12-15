@@ -189,8 +189,8 @@ const ConfigurationPage = () => {
                                                 </thead>
                                                 <tbody>
                                                     {
-                                                        uniqueProfessions.map(element =>
-                                                        (<tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                        uniqueProfessions.map((element,key) =>
+                                                        (<tr key={key} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                                             <td className="py-4 px-6">{element.profession.name}</td>
                                                             <td className="py-4 px-6">{element.experience.name}</td>
                                                             <td className="py-4 px-6">{element.availability.name}</td>

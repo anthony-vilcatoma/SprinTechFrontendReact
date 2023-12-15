@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import '../../assets/css/service.css'
 import { Button } from 'flowbite-react';
 import { LayaoutDashboard } from '../../components/LayaoutDashboard'
@@ -20,6 +21,9 @@ import { getUserInformation } from '../../apis/Client/UserApi';
 
 
 export function ServicePage() {
+
+    const { register: registerForm, handleSubmit, formState: {errors}, } = useForm() 
+
     //Guardamos el token para poder llenarla en cualquier peticion
     const accessToken = localStorage.getItem("access_token");
     const decodedToken = JSON.parse(atob(accessToken.split('.')[1]));
@@ -162,10 +166,9 @@ export function ServicePage() {
 
 
 
-    const loadNewMap = async (event) => {
-        event.preventDefault()
+    const loadNewMap = handleSubmit(async (data) => {
+        console.log("DATA NEW",data);
         try {
-
 
             const map = new window.google.maps.Map(document.getElementById("map"), {
                 zoom: 14,
@@ -194,7 +197,7 @@ export function ServicePage() {
             //Cargando a todos los tecnicos 
             getTechnicallsByLocation(accessToken, dataApiProcedure.professionId, dataApiProcedure.availabilityId, dataApiProcedure.latitude, dataApiProcedure.longitude, dataApiProcedure.distance)
                 .then(data => {
-                    console.log(data.data.body);
+                    console.log("TECHNICALS",data.data.body);
                     const technicals = data.data.body;
                     setTechnicals(technicals)
                     technicals.forEach(element => {
@@ -218,7 +221,7 @@ export function ServicePage() {
             console.error("Error occurred while initializing map:", error);
         }
         console.log(formValues)
-    };
+    });
 
 
     useEffect(() => {
@@ -277,6 +280,11 @@ export function ServicePage() {
 
     }, []); // The empty dependency ensures that this effect runs only once
     console.log("xd", technicals);
+
+
+
+
+
     return (
         <LayaoutDashboard>
             <div className="container-all-service" >
@@ -288,84 +296,123 @@ export function ServicePage() {
                         </div>
 
                     </div>
-                    <div className="w-5/12 	">
-                        <form action="">
-                            <div className="flex w-9/12 mx-auto justify-between items-center">
+                    <div className="w-6/12 	">
+                        {/*-------------------- FORM -----------------------------*/}
+                        <form onSubmit={loadNewMap}>
+                            <div className="flex w-9/12 mb-3 mx-auto justify-between items-center">
                                 <div className="title mx-auto w-9/12 h-5 mt-9 mb-12 text-2xl font-semibold">
                                     BUSCA A TU TECNICO
                                 </div>
-                                <select
-                                    name='distance'
-                                    onChange={handleInputChangeApiProcedure}
-                                    className="form-select-map  p-2 block w-4/12 border-gray-200 rounded-md text-base 	
-                            focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400   ">
-                                    <option disabled selected value>Rango</option>
-                                    <option value="5">5 Kilometro</option>
-                                    <option value="7">7 Kilometros</option>
-                                    <option value="10">10 Kilometros</option>
+                                <div className='w-4/12 mt-5'>
+                                    <select
+                                        {...registerForm("distance",{required:true})}
+                                        onChange={handleInputChangeApiProcedure}
+                                        className="form-select-map w-full p-2 block border-gray-200 rounded-md text-base 	
+                                focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400   ">
+                                        <option disabled selected value="">Rango</option>
+                                        <option value="5">5 Kilometro</option>
+                                        <option value="7">7 Kilometros</option>
+                                        <option value="10">10 Kilometros</option>
 
-                                </select>
+                                    </select>
+                                    {
+                                        errors.distance && (
+                                            <p className="text-red-500 text-xs">Rango requerido</p>
+                                        )
+                                    }
+                                </div>
+
+                            </div>
+                            <div className='flex flex-col items-center gap-y-5 mb-3'>
+                                <div className='w-9/12'>
+                                    <select
+                                        {...registerForm("professionId", {required: true})}
+                                        onChange={handleInputChangeApiProcedure}
+                                        className="form-select-map w-full py-3 px-4 pr-9 block border-gray-200 rounded-md text-base 	
+                                    focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5 ">
+                                        <option disabled selected value="">Seleccione la Profession</option>
+                                        {professions.map(opcion => (
+                                            <option key={opcion.id} value={opcion.id}>{opcion.name}</option>
+                                        ))}
+                                    </select>
+                                    {
+                                        errors.professionId && (
+                                            <p className="text-red-500 text-xs">Seleccione una profesión</p>
+                                        )
+                                    }
+                                </div>
+                                <div className='w-9/12'>
+                                    <select
+                                        {...registerForm("categoryService", {required:true})}
+                                        onChange={(event) => {
+                                            setCategoryService(event.target.value)
+                                        }}
+                                        className="form-select-map w-full py-3 px-4 pr-9 block border-gray-200 rounded-md text-base 	
+                                    focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5 ">
+                                        <option disabled selected value="">Seleccione la categoria</option>
+                                        {categoryByService.map(opcion => (
+                                            <option key={opcion.id} value={opcion.id}>{opcion.name} </option>
+                                        ))}
+                                    </select>
+                                    {
+                                        errors.categoryService && (
+                                            <p className="text-red-500 text-xs">Seleccione una categoría</p>
+                                        )
+                                    }
+                                </div>
+                                <div className='w-9/12'>
+                                    <select
+                                        {...registerForm("availabilityId", {required:true})}
+                                        onChange={handleInputChangeApiProcedure}
+                                        className="form-select-map w-full py-3 px-4 pr-9 block border-gray-200 rounded-md text-base 	
+                                    focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5 ">
+                                        <option disabled selected value="">Disponibilidad del tecnico</option>
+                                        {avalibalities.map(opcion => (
+                                            <option key={opcion.id} value={opcion.id}>{opcion.name}</option>
+                                        ))}
+                                    </select>
+                                    {
+                                        errors.availabilityId && (
+                                            <p className="text-red-500 text-xs">Seleccione una disponibilidad</p>
+                                        )
+                                    }
+                                </div>
+                                            
+                                <div className="w-9/12 flex justify-between">
+                                    <div className='w-6/12'>
+                                        <select
+                                            {...registerForm("location", {required:true})}
+                                            onChange={handleInputSelectLocation}
+                                            className="form-select-map  py-3 px-4 block border-gray-200 rounded-md text-base w-full 
+                                    focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5">
+                                            <option disabled selected value="">Elige tu Ubicación</option>
+                                            <option value="1">Mi ubicación</option>
+                                            <option value="2">Otra Ubicación</option>
+                                        </select>
+                                        {
+                                        errors.location && (
+                                            <p className="text-red-500 text-xs">Seleccione una ubicación</p>
+                                        )
+                                    }
+                                    </div>
+                                    <Button
+                                        style={{ height: '66px' }}
+                                        className='bg-blue-400 text-4xl w-5/12 '
+                                        onClick={() => setIsOpenModal(true)}>DETALLA TU PROBLEMA</Button>
+                                    {isOpenModal && <DirectRequestModal
+                                        onCloseModal={() => setIsOpenModal(false)}
+                                        isOpen={isOpenModal}
+                                        onUpdateFormValues={handleFormValuesUpdate}
+                                    />}
+                                </div>
                             </div>
 
-                            <select
-                                name='professionId'
-                                onChange={handleInputChangeApiProcedure}
-                                className="form-select-map  py-3 px-4 pr-9 block w-9/12 border-gray-200 rounded-md text-base 	
-                            focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5 mx-auto mb-8">
-                                <option disabled selected value>Seleccione la Profession</option>
-                                {professions.map(opcion => (
-                                    <option key={opcion.id} value={opcion.id}>{opcion.name}</option>
-                                ))}
-                            </select>
-                            <select
-                                name='categoryService'
-                                onChange={(event) => {
-                                    setCategoryService(event.target.value)
-                                }}
-                                className="form-select-map  py-3 px-4 pr-9 block w-9/12 border-gray-200 rounded-md text-base 	
-                            focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5 mx-auto mb-8">
-                                <option disabled selected value>Seleccione la categoria</option>
-                                {categoryByService.map(opcion => (
-                                    <option key={opcion.id} value={opcion.id}>{opcion.name} </option>
-                                ))}
-                            </select>
-                            <select
-                                name='availabilityId'
-                                onChange={handleInputChangeApiProcedure}
-
-                                className="form-select-map  py-3 px-4 pr-9 block w-9/12 border-gray-200 rounded-md text-base 	
-                            focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5 mx-auto mb-8">
-                                <option disabled selected value>Disponibilidad del tecnico</option>
-                                {avalibalities.map(opcion => (
-                                    <option key={opcion.id} value={opcion.id}>{opcion.name}</option>
-                                ))}
-                            </select>
-
-                            <div className="w-9/12 flex justify-between mx-auto">
-                                <select
-                                    onChange={handleInputSelectLocation}
-                                    className="form-select-map  py-3 px-4 pr-9 block w-5/12 border-gray-200 rounded-md text-base 	
-                            focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5  mb-8">
-                                    <option disabled selected value>Elige tu Ubicación</option>
-                                    <option value="1">Mi ubicación</option>
-                                    <option value="2">Otra Ubicación</option>
-                                </select>
-                                <Button
-                                    style={{ height: '68px' }}
-                                    className='bg-blue-400 text-4xl'
-                                    onClick={() => setIsOpenModal(true)}>DETALLA TU PROBLEMA</Button>
-                                {isOpenModal && <DirectRequestModal
-                                    onCloseModal={() => setIsOpenModal(false)}
-                                    isOpen={isOpenModal}
-                                    onUpdateFormValues={handleFormValuesUpdate}
-                                />}
-                            </div>
 
 
-
-                            <button onClick={loadNewMap} className="boton_buscar block w-9/12 font-bold	 text-2xl p-3 mx-auto rounded-md">BUSCAR
+                            <button className="boton_buscar block w-9/12 font-bold	 text-2xl p-3 mx-auto rounded-md">BUSCAR
                                 ESPECIALISTAS</button>
                         </form>
+                        {/*-------------------- END FORM -----------------------------*/}
                     </div>
                 </div>
 
@@ -386,8 +433,8 @@ export function ServicePage() {
                     <div className="listadoespecialistas w-4/12 overflow-y-scroll	">
 
 
-                        {technicals.map(opcion => (
-                            <TechnicalDiv name={opcion.name} lastnames={`${opcion.lastname} ${opcion.motherLastname}`} birthDate={opcion.birthDate} 
+                        {technicals.map((opcion,key) => (
+                            <TechnicalDiv key={key} name={opcion.name} lastnames={`${opcion.lastname} ${opcion.motherLastname}`} birthDate={opcion.birthDate} 
                             
                             btnVer={() => {
                                 const info = {

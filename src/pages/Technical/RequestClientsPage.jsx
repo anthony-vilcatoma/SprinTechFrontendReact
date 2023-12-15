@@ -39,9 +39,14 @@ export default function RequestClientsPage() {
         setTechnicalId(res.data.body.id)
       })
 
+      
   }, [renderComponenet])
 
   useEffect(() => {
+    if(!workingStatus){
+      return;
+    }
+
     const intervalId = setInterval(() => {
       const accessToken = localStorage.getItem("access_token");
   
@@ -55,11 +60,11 @@ export default function RequestClientsPage() {
             console.error('Error al obtener la ubicación:', error);
           });
       }
-    }, 5000);
+    }, 60000);
   
     // Limpieza del intervalo cuando el componente se desmonte
     return () => clearInterval(intervalId);
-  }, [technicalId]); // Agregar technicalId como dependencia
+  }, [technicalId, workingStatus]); // Agregar technicalId como dependencia
   
   return (
     <LayaoutDashboard>

@@ -117,12 +117,12 @@ export function ModalTarifaComponent({ onClose, directRequest }) {
                                 </div>
                             </div>
                         </div>
-                        <div className="w-7/12 overflow-y-scroll h-110	">
+                        <form onSubmit={sendInvoice} className="w-7/12 overflow-y-scroll h-110	">
                             <div className="flex justify-between">
                                 <h1 className='text-3xl font-bold'>Cotiza la Solicitud</h1>
                                 <div className="flex">
-                                    <button className="bg-gray-400 text-white rounded-md p-2" onClick={onClose}>Cancelar</button>
-                                    <button onClick={sendInvoice} className='bg-orange-personalized text-white  ml-4 rounded-md p-2'>Enviar</button>
+                                    <button type='button' className="bg-gray-400 text-white rounded-md p-2" onClick={onClose}>Cancelar</button>
+                                    <button type='submit' className='bg-orange-personalized text-white  ml-4 rounded-md p-2'>Enviar</button>
                                 </div>
 
                             </div>
@@ -131,14 +131,14 @@ export function ModalTarifaComponent({ onClose, directRequest }) {
                                     <label className='block w-8/12 font-medium text-lg'>Asunto:</label>
                                     <input type="text" onChange={(event) => {
                                         setForm({ ...form, task: event.target.value })
-                                    }} className="block font-medium  w-12/12 p-2 py-3 border-gray-200 bg-gray-100 rounded-md text-base   focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 " />
+                                    }} required className="block font-medium  w-12/12 p-2 py-3 border-gray-200 bg-gray-100 rounded-md text-base   focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 " />
 
                                 </div>
                                 <div className="w-5/12  flex flex-col content-end self-end">
                                     <label className='block w-7/12 font-medium text-lg'>Precio Total:</label>
-                                    <input onChange={(event) => {
+                                    <input required onChange={(event) => {
                                         setForm({ ...form, price: event.target.value })
-                                    }} type="text" className="block font-medium  w-10/12 p-2 py-3  border-gray-100 bg-gray-100 rounded-md text-base       focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 " />
+                                    }} type="number" className="block font-medium  w-10/12 p-2 py-3  border-gray-100 bg-gray-100 rounded-md text-base       focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 " />
 
                                 </div>
 
@@ -146,7 +146,7 @@ export function ModalTarifaComponent({ onClose, directRequest }) {
 
                             <div className="mb-4 mt-5 flex flex-col">
                                 <label className='block w-6/12 font-medium mb-2 text-lg'>Describe la cotización:</label>
-                                <textarea onChange={(event) => {
+                                <textarea required onChange={(event) => {
                                     setForm({ ...form, description: event.target.value })
                                 }} name="textarea" rows={5} className=' font-medium block text-justify w-full p-2  border-gray-200 bg-gray-100 rounded-md text-gray-600 text-base  focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 p-5 '></textarea>
 
@@ -226,7 +226,7 @@ export function ModalTarifaComponent({ onClose, directRequest }) {
                                 </div>
 
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </Modal.Body>
 
