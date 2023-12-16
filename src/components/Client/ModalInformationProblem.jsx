@@ -13,7 +13,7 @@ export function ModalInformationProblem({ onClose, directRequest }) {
         <>
             <Modal show={true} onClose={onClose} size="5xl" style={{ fontFamily: 'Urbanist, sans-serif' }} className='h-fit'>
                 <Modal.Body className="py-5 px-10 relative ">
-                    <button className="absolute top-5 right-5"><i class=' bx bxs-x-circle text-3xl' onClick={onClose} ></i></button>
+                    <button className="absolute top-5 right-5"><i className=' bx bxs-x-circle text-3xl' onClick={onClose} ></i></button>
                     <div className="flex">
                         <div className="flex-col w-5/12">
                             <div className=" bg-gray-50 rounded-xl shadow-2xl p-4 px-4 md:p-8 mb-6">
@@ -44,9 +44,9 @@ export function ModalInformationProblem({ onClose, directRequest }) {
 
                                         <div className="container-person mb-2  flex items-center justify-evenly">
                                             <Carousel className='block h-52 w-11/12 rounded-2xl ' slide={false}>
-                                                {images.map(e =>
+                                                {images.map((e,index) =>
                                                 (
-                                                    <img className=' object-cover	 rounded-md h-full w-full' src={`data:${e.contentType};base64,${e.file}`} alt="" />
+                                                    <img key={index} className=' object-cover	 rounded-md h-full w-full' src={`data:${e.contentType};base64,${e.file}`} alt="" />
                                                 )
                                                 )}
 
@@ -112,8 +112,8 @@ export function ModalInformationProblem({ onClose, directRequest }) {
                                         {
                                             directRequest.serviceTypeAvailabilityDto ? <><div className="p-4 bg-white shadow-lg rounded-lg">
                                             <div className="flex justify-between">
-                                                <p className='font-bold'>{directRequest.categoryService.name}</p>
-                                                <div className="text-white bg-personalized rounded-lg p-1.5"></div>
+                                                <p className='font-bold'>{directRequest.serviceTypeAvailabilityDto.service.name}</p>
+                                                <div className="text-white bg-personalized rounded-lg p-1.5">{directRequest.categoryService.name}</div>
                                             </div>
                                             <p className='mt-1 w-11/12 text-gray-600 text-sm mb-2'>{directRequest.serviceTypeAvailabilityDto.service.description}</p>
                                             <p className='font-bold'>S/ {directRequest.serviceTypeAvailabilityDto.service.price}</p>

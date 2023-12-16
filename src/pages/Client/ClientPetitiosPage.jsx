@@ -2,25 +2,25 @@ import React, { useEffect, useState } from 'react'
 import { showAllDirectRequestToOneClient } from '../../apis/Client/DirectRequest'
 import { getUserInformation } from '../../apis/Client/UserApi'
 import { LayaoutDashboard } from '../../components/LayaoutDashboard'
-import {ProblemClientComponent} from '../../components/Client/ProblemClientComponent';
+import { ProblemClientComponent } from '../../components/Client/ProblemClientComponent';
 
 export default function ClientPetitiosPage() {
     const [directRequestAll, setDirectRequest] = useState([]);
-    const [clientId,setClientId] = useState([]);
+    const [clientId, setClientId] = useState([]);
     console.log(directRequestAll)
 
 
-    const showAllRequestInProcess = ()=>{
+    const showAllRequestInProcess = () => {
         const access_token = window.localStorage.getItem("access_token")
-        showAllDirectRequestToOneClient(access_token,clientId,2)
-        .then(res=> setDirectRequest(res.data.body))
+        showAllDirectRequestToOneClient(access_token, clientId, 2)
+            .then(res => setDirectRequest(res.data.body))
         console.log("mostrando los en proceceso")
     }
 
-    const showAllRequestInPending = ()=>{
+    const showAllRequestInPending = () => {
         const access_token = window.localStorage.getItem("access_token")
-        showAllDirectRequestToOneClient(access_token,clientId,1)
-        .then(res=> setDirectRequest(res.data.body))
+        showAllDirectRequestToOneClient(access_token, clientId, 1)
+            .then(res => setDirectRequest(res.data.body))
         console.log("mostrando los en pendiente")
     }
 
@@ -50,10 +50,13 @@ export default function ClientPetitiosPage() {
                     <button className='bg-blue-400 text-white p-2 flex rounded-lg justify-center items-center' onClick={showAllRequestInPending}>Pendientes</button>
                 </div>
             </div>
-            {directRequestAll.map(e => (
+            <div className="w-6/12  flex flex-col gap-y-7 justify-between mx-auto py-5 bg-white shadow-personalized rounded-2xl px-4">
+                {directRequestAll.map(e => (
 
-                <ProblemClientComponent e={e}/>
-            ))}
+                    <ProblemClientComponent e={e} />
+                ))}
+            </div>
+
         </LayaoutDashboard>
     )
 }

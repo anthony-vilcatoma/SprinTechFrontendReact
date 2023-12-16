@@ -17,3 +17,5 @@ export const showAllDirectRequestToOneTechnical=(token,technicalId,state) => axi
 export const showAllDirectRequestToOneTechnicalAlreadyInvoice=(token,technicalId,state)=> axios.get(`/directrequest?technicalId=${technicalId}&state=${state}&stateInvoice=1`,{headers:{Authorization:`Bearer ${token}`}})
 
 export const showAllDirectRequestToOneClient=(token,clientId,state) => axios.get(`/directrequest?clientId=${clientId}&state=${state}`,{headers:{Authorization:`Bearer ${token}`}})
+
+export const changeStateDirectRequest=(token,directRequestId,stateId)=>axios.put(`/directrequest/${directRequestId}`,stateId,{headers:{Authorization:`Bearer ${token}`}})

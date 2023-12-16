@@ -39,7 +39,7 @@ export default function TechnicalServicePage() {
                 <p className="w-8/12 ml-1 text-gray-500 mb-5 ml-16">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.Excepteur sint occaecat.</p>
 
                 {
-                    professionsUnique.map(e => <ProfessionServiceComponent  technicalId={technicalId} professionId={e.profession.id} professionName={e.profession.name} />
+                    professionsUnique.map((e,index) => <ProfessionServiceComponent key={index} technicalId={technicalId} professionId={e.profession.id} professionName={e.profession.name} />
                     )
                 }
 

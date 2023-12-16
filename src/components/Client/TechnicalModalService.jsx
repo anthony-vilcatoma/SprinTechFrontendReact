@@ -70,7 +70,7 @@ export default function TechnicalModalService({ open, close, professionId,render
     return (
         <Modal show={true} onClose={open} size="4xl" style={{ fontFamily: 'Urbanist, sans-serif' }}>
             <Modal.Body className="px-10 relative">
-                <button className="absolute top-5 right-5"><i class='bx bxs-x-circle text-3xl' onClick={close} ></i></button>
+                <button className="absolute top-5 right-5"><i className='bx bxs-x-circle text-3xl' onClick={close} ></i></button>
                 <h1 className="font-bold text-2xl mx-auto text-center mb-5">Detalles de su servicio</h1>
 
                 <form className="flex" onSubmit={submitForm}>
@@ -90,12 +90,13 @@ export default function TechnicalModalService({ open, close, professionId,render
 
                         <label htmlFor="">Seleccione la Categoria</label>
                         <select required onChange={handleInputChange}
+                            value={formData.categoryServiceId || 'default'}
                             name='categoryServiceId'
                             className="   bg-gray-200 mb-5 p-2 block w-full border-gray-200 rounded-md text-base 	
                             focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400   ">
-                            <option disabled selected value>Categoria</option>
+                            <option disabled value="defualt">Categoria</option>
                             {
-                                categoriesService.map(e => <option value={e.id}>{e.name}</option>)
+                                categoriesService.map((e,index) => <option key={index} value={e.id}>{e.name}</option>)
                             }
                         </select>
 
@@ -103,11 +104,10 @@ export default function TechnicalModalService({ open, close, professionId,render
                             <div className="block w-6/12">
                                 <label htmlFor="">Precio del servicio</label>
                                 <div className="flex  w-6/12">
-                                    <select required onChange={handleInputChange}
-                                        name=''
+                                    <select 
                                         className=" bg-gray-200 w-16 mr-3 mb-5 p-2 block  border-gray-200 rounded-md text-base 	
                                 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400   ">
-                                        <option disabled selected value>S/</option>
+                                        <option disabled value>S/</option>
                                         <option value="5">$</option>
                                         <option value="7"></option>
                                         <option value="10">10 Kilometros</option>
@@ -123,12 +123,13 @@ export default function TechnicalModalService({ open, close, professionId,render
                                 <label htmlFor="">Disponibilidad</label>
                                 <div className="flex">
                                     <select required onChange={handleInputChange}
+                                        value={formData.professionAvailabilityId|| 'default'}
                                         name='professionAvailabilityId'
                                         className=" bg-gray-200  mb-5 p-2 block w-full border-gray-200 rounded-md text-base 	
                             focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400   ">
-                                        <option disabled selected value>Disponibilidad</option>
+                                        <option disabled value="default">Disponibilidad</option>
                                         {
-                                            availabilitiesOption.map(e => <option value={e.id}>{e.availability.name}</option>
+                                            availabilitiesOption.map((e,index) => <option key={index} value={e.id}>{e.availability.name}</option>
                                             )
                                         }
 

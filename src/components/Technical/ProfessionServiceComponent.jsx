@@ -29,7 +29,7 @@ export default function ProfessionServiceComponent({ professionId,professionName
                 </div>
                 <div className="services-cards flex  flex-wrap  gap-y-12">
                     {
-                        services.map(e => <ServiceCardComponent serviceObject={e}/>
+                        services.map((e,index) => <ServiceCardComponent key={index} serviceObject={e}/>
                         )
                     }
                 </div>

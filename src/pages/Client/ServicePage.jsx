@@ -249,37 +249,10 @@ export function ServicePage() {
         } catch (error) {
 
         }
-
-
-
-
-
-
-        // Check if the Google Maps script is already loaded
-        if (!window.google) {
-            // Load the Google Maps script
-            const script = document.createElement("script");
-            script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBihRqZC1ca4ienBNShbR6ZtNPoLxkrntU&callback=initMap&v=weekly`;
-            script.defer = true;
-            document.head.appendChild(script);
-
-            // Set the initMap function to your custom initializeMap function
-            window.initMap = initializeMap;
-
-            // Clean up resources when the component is unmounted
-            return () => {
-                document.head.removeChild(script);
-                window.initMap = undefined;
-            };
-        } else {
-            // If the script is already loaded, directly initialize the map
             initializeMap();
 
 
-        }
-
     }, []); // The empty dependency ensures that this effect runs only once
-    console.log("xd", technicals);
 
 
 
@@ -307,9 +280,10 @@ export function ServicePage() {
                                     <select
                                         {...registerForm("distance",{required:true})}
                                         onChange={handleInputChangeApiProcedure}
+                                        value={dataApiProcedure.distance || 'default'} 
                                         className="form-select-map w-full p-2 block border-gray-200 rounded-md text-base 	
                                 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400   ">
-                                        <option disabled selected value="">Rango</option>
+                                        <option disabled value="default">Rango</option>
                                         <option value="5">5 Kilometro</option>
                                         <option value="7">7 Kilometros</option>
                                         <option value="10">10 Kilometros</option>
@@ -328,11 +302,12 @@ export function ServicePage() {
                                     <select
                                         {...registerForm("professionId", {required: true})}
                                         onChange={handleInputChangeApiProcedure}
+                                        value={dataApiProcedure.professionId|| 'default'} 
                                         className="form-select-map w-full py-3 px-4 pr-9 block border-gray-200 rounded-md text-base 	
                                     focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5 ">
-                                        <option disabled selected value="">Seleccione la Profession</option>
-                                        {professions.map(opcion => (
-                                            <option key={opcion.id} value={opcion.id}>{opcion.name}</option>
+                                        <option disabled value="default">Seleccione la Profession</option>
+                                        {professions.map((opcion,index) => (
+                                            <option key={index} value={opcion.id}>{opcion.name}</option>
                                         ))}
                                     </select>
                                     {
@@ -347,9 +322,10 @@ export function ServicePage() {
                                         onChange={(event) => {
                                             setCategoryService(event.target.value)
                                         }}
+                                        value={categoryService || 'default'} 
                                         className="form-select-map w-full py-3 px-4 pr-9 block border-gray-200 rounded-md text-base 	
                                     focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5 ">
-                                        <option disabled selected value="">Seleccione la categoria</option>
+                                        <option disabled  value="default">Seleccione la categoria</option>
                                         {categoryByService.map(opcion => (
                                             <option key={opcion.id} value={opcion.id}>{opcion.name} </option>
                                         ))}
@@ -364,11 +340,12 @@ export function ServicePage() {
                                     <select
                                         {...registerForm("availabilityId", {required:true})}
                                         onChange={handleInputChangeApiProcedure}
+                                        value={dataApiProcedure.availabilityId || 'selected'} 
                                         className="form-select-map w-full py-3 px-4 pr-9 block border-gray-200 rounded-md text-base 	
                                     focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5 ">
-                                        <option disabled selected value="">Disponibilidad del tecnico</option>
-                                        {avalibalities.map(opcion => (
-                                            <option key={opcion.id} value={opcion.id}>{opcion.name}</option>
+                                        <option disabled  value="selected">Disponibilidad del tecnico</option>
+                                        {avalibalities.map((opcion,index) => (
+                                            <option key={index} value={opcion.id}>{opcion.name}</option>
                                         ))}
                                     </select>
                                     {
@@ -383,9 +360,10 @@ export function ServicePage() {
                                         <select
                                             {...registerForm("location", {required:true})}
                                             onChange={handleInputSelectLocation}
+                                            value={dataApiProcedure.location || 'default'}
                                             className="form-select-map  py-3 px-4 block border-gray-200 rounded-md text-base w-full 
                                     focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5">
-                                            <option disabled selected value="">Elige tu Ubicación</option>
+                                            <option disabled value="default">Elige tu Ubicación</option>
                                             <option value="1">Mi ubicación</option>
                                             <option value="2">Otra Ubicación</option>
                                         </select>

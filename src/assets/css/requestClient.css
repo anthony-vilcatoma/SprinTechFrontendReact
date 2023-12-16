@@ -1,0 +1,32 @@
+#solicitudes {
+    overflow: auto;
+    height: 670px;
+  }
+
+  #solicitudes::-webkit-scrollbar {
+      width: 10px; /* Ancho de la barra de desplazamiento */
+  }
+
+  #solicitudes::-webkit-scrollbar-thumb {
+      background-color: #d1d1d1; /* Color del "pulgarcito" de la barra de desplazamiento */
+      border-radius: 6px; /* Bordes redondeados del "pulgarcito" */
+  }
+
+  #solicitudes::-webkit-scrollbar-track {
+      background-color: #eee; /* Color de fondo de la barra de desplazamiento */
+  }
+
+  .shadow-personalized {
+    box-shadow: 0px 4px 30px 0px rgba(0, 0, 0, 0.25);
+  }
+  .bg-personalized {
+    background-color: #CB7930;
+  }
+  .shadow-solicitud {
+    fill: #FFF;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.25);
+  }
+  .bg-cyan-personalized{
+    background-color: #78909C;
+  }
+  

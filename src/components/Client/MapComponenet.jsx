@@ -2,19 +2,21 @@ import { useEffect } from "react";
 import { getUserLocation } from '../../assets/js/userLocation';
 import banderita from '../../assets/images/banderita.png'
 
-export function MapComponent({setUbication}){
+export function MapComponent({ setUbication, posibleLocation }) {
+    var locateP = posibleLocation
 
-    const initializeMap = async () => {
+    const initializeMap = async (locate) => {
+
         try {
             const userLocation = await getUserLocation();
 
             const map = new google.maps.Map(document.getElementById('mapa_local'), {
-                center: userLocation,
-                zoom: 15
+                center: locate.lat!=null ? locate : userLocation,
+                zoom: 13
             });
             const iconSize = new window.google.maps.Size(35, 40);
-
             let marker = new google.maps.Marker({
+                position:locate,
                 map: map,
                 icon: {
                     url: banderita,
@@ -31,7 +33,7 @@ export function MapComponent({setUbication}){
             google.maps.event.addListener(map, 'click', function (event) {
                 marker.setPosition(event.latLng);
                 marker.setMap(map);
-                setUbication(marker.getPosition().lat(),marker.getPosition().lng())
+                setUbication(marker.getPosition().lat(), marker.getPosition().lng())
             });
 
             marker.addListener('dragend', function (event) {
@@ -42,39 +44,21 @@ export function MapComponent({setUbication}){
         }
     };
 
-    useEffect(()=>{
-        // Check if the Google Maps script is already loaded
-        if (!window.google) {
-            // Load the Google Maps script
-            const script = document.createElement("script");
-            script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBihRqZC1ca4ienBNShbR6ZtNPoLxkrntU&callback=initMap&v=weekly`;
-            script.defer = true;
-            document.head.appendChild(script);
+    useEffect(() => {
+            console.log("renderizando")
+            initializeMap(locateP);
+        
 
-            // Set the initMap function to your custom initializeMap function
-            window.initMap = initializeMap;
-
-            // Clean up resources when the component is unmounted
-            return () => {
-                document.head.removeChild(script);
-                window.initMap = undefined;
-            };
-        } else {
-            // If the script is already loaded, directly initialize the map
-            initializeMap();
-
-
-        }
-
-    }, []); 
+    });
     return (
         <div className="map w-full h-full bg-gray-400 rounded-lg">
             <div id='mapa_local' className="mapa_local w-full rounded-lg h-full bg-gray-400 shadow-2xl">
-            
+
+
 
             </div>
-            
-             
+
+
         </div>
     );
 }

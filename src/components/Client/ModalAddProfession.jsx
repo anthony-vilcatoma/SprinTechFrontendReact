@@ -121,9 +121,9 @@ export default function ModalAddProfession({ open, close, reloadComponent,profes
 
     }, [])
     return (
-        <Modal show={true} onClose={open}  className='w-fit mx-auto' style={{ fontFamily: 'Urbanist, sans-serif' }}>
-            <Modal.Body className="p-10 relative">
-                <button className="absolute top-5 right-5"><i class='bx bxs-x-circle text-3xl' onClick={close} ></i></button>
+        <Modal show={true} onClose={open}  size={"md"} style={{ fontFamily: 'Urbanist, sans-serif' }}>
+            <Modal.Body className='w-fit mx-auto'>
+                <button className="absolute top-5 right-5"><i className='bx bxs-x-circle text-3xl' onClick={close} ></i></button>
                 <h1 className="font-bold text-xl mx-auto text-center mb-5">Agregar Professión</h1>
 
                 <div className="flex justify-between items-center">
@@ -131,9 +131,10 @@ export default function ModalAddProfession({ open, close, reloadComponent,profes
 
                         <select onChange={handleInputChange}
                             name='professionId'
+                            value={formData.professionId || 'selected'} // Usa value en lugar de selected
                             className=" bg-gray-200 text-gray-600 block mx-auto mb-5 p-2 block w-full border-gray-200 rounded-md text-base 	
                             focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400   ">
-                            <option disabled selected value>Seleccione su profession</option>
+                            <option disabled value="selected">Seleccione su profession</option>
                             {professionsShow.map(element=>
                                 <option key={element.id} value={element.id}>{element.name}</option>)}
 
@@ -142,18 +143,21 @@ export default function ModalAddProfession({ open, close, reloadComponent,profes
 
                         <select onChange={handleInputChange}
                             name='experienceId'
+                            value={formData.experienceId || 'selected'} // Usa value en lugar de selected
+
                             className="   bg-gray-200  text-gray-600 mb-5 p-2 block w-full border-gray-200 rounded-md text-base 	
                             focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400   ">
-                            <option disabled selected value>Seleccione la experiencia</option>
+                            <option disabled value="selected">Seleccione la experiencia</option>
                             {experiences.map(element => (<option key={element.id} value={element.id} >{element.name}</option>))}
 
                         </select>
 
                         <select onChange={handleInputChange}
+                            value={formData.availabilityId|| 'selected'} // Usa value en lugar de selected
                             name='availabilityId'
                             className="   bg-gray-200  text-gray-600 mb-5 p-2 block w-full border-gray-200 rounded-md text-base 	
                             focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400   ">
-                            <option disabled selected value>Seleccione su disponibilidad</option>
+                            <option disabled  value="selected">Seleccione su disponibilidad</option>
                             {availabilities.map(element => (<option key={element.id} value={element.id} >{element.name}</option>))}
                             <option value="ambas">Ambas Modalidades</option>
 

@@ -23,9 +23,9 @@ const ConfigurationPage = () => {
     const [renderComponent, setRenderComponent] = useState(true);
 
     const [userInformation, setUserInformation] = useState({
-        name: null,
-        lastname: null,
-        motherLastname: null,
+        name: "",
+        lastname: "",
+        motherLastname: "",
         birthDate:null,
         latitude:null,
         longitude:null

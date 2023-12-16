@@ -2,34 +2,32 @@ import React, { useState } from 'react'
 import { ModalInformationProblem } from './ModalInformationProblem';
 import { ModalTarifaComponent } from '../Technical/ModalTarifaComponent';
 import { ModalInformationTarifa } from '../../components/ModalInformationTarifa'
-export const ProblemClientComponent = ({ e, typeModal }) => {
+import { changeStateDirectRequest } from '../../apis/Client/DirectRequest';
+export const ProblemClientComponent = ({ e, typeModal,setUbication }) => {
+    const id=e.id
+    const ubicateClient  = {lat:e.latitude,lng:e.longitude}
     const [modalTarifa, setModalTarifa] = useState(false);
     const [showModalInformation, setShowModalInformation] = useState(false);
     const [viewModalInformationTarifa, setModalInformationTarifa] = useState(false);
+    console.log("compilando componente")
+    function cancelPetition(){
+        const access_token = window.localStorage.getItem("access_token")
+        changeStateDirectRequest(access_token,id,{stateId:4})
+        .then(res=>console.log("xd"))
+    }
     return (
         <>
-            <div className="flex relative mx-auto rounded-xl max-w-4xl pr-5 pl-1	py-4 w-10/12 bg-gray-100 mb-10">
+
+            <div id="solicitud" className="flex relative flex-row h-40	 h-max-44 shadow-solicitud rounded-2xl p-4">
                 {e.stateInvoice == "1" ? (<button onClick={() => { setModalInformationTarifa(true) }} className='absolute top-2 right-5 bg-gray-200 rounded-md p-1 block'><i class='bx bx-spreadsheet text-2xl' ></i></button>) : ""}
-                <div className="w-3/12 rounded-lg p-1 ml-2 mr-4 flex justify-center mr-1 items-center ">
-                    <img src={`data:${e.files[0].contentType};base64,${e.files[0].file}`} alt="" className='w-48 h-32 rounded-lg' />
-                </div>
-                <div className="w-9/12 h-16 ">
-                    <div className="w-10/12 h-20 mb-5">
-                        <p className='text-lg font-semibold mb-3'>{e.title}</p>
-                        <p className='block h-8 text-gray-400 text-xs font-semibold'>{e.description}</p>
-                    </div>
-                    <div className="flex justify-between items-center">
-
-                        <div className="flex">
-                            <p className='font-semibold text-blue-400 text-sm mr-5'>{e.state.name}</p>
-                            <p className='font-semibold text-sm mr-5'>{e.categoryService.name}</p>
-                            <p className='font-semibold text-sm'>2023-12-10 05:23</p>
+                <img width="163" style={{ height: '123px' }} className="rounded-lg" src={`data:${e.files[0].contentType};base64,${e.files[0].file}`} alt="" />
+                <div className="pl-4 flex flex-col justify-between">
+                    <div id="head-card" className="flex flex-row justify-between gap-x-4">
+                        <div>
+                            <h2 className="text-lg font-medium">Necesito que arreglen mi motor</h2>
+                            <p className="text-sm">Mi motor necesita atención y estoy en busca de alguien con habilidades para solucionar problemas mecánicos...</p>
                         </div>
-
-                        <div className="flex">
-
-
-
+                        <div>
                             {typeModal == "Technical" && e.stateInvoice == 1 ? (
                                 ""
                             ) : (
@@ -37,28 +35,37 @@ export const ProblemClientComponent = ({ e, typeModal }) => {
                                     {typeModal === "Technical" ? (
                                         <button onClick={() => {
                                             setModalTarifa(true);
-                                        }} className="bg-green-400 p-2 text-white rounded-md mr-5">
-                                            Cotizar
-                                        </button>
-                                    ) : (
-                                        <button className='p-2 text-gray-500 rounded-md bg-gray-300 mr-5'>
-                                            Cancelar
-                                        </button>
-                                    )}
+                                        }} className="px-1 py-2 rounded-md text-sm bg-personalized font-semibold text-white">COTIZAR</button>
+
+                                    ) : ""}
                                 </>
                             )}
 
-
-
-                            <button onClick={() => {
+                        </div>
+                    </div>
+                    <div id="footer-card" className="flex flex-row justify-between">
+                        <span className="text-blue-400">Pendiente</span>
+                        <span className="text-slate-500">Reparación</span>
+                        <span>2024-12-21 05:54</span>
+                        <div className="flex flex-row gap-x-2">
+                            <button  onClick={() => {
                                 setShowModalInformation(true)
-                            }} className='p-2 text-white rounded-md  bg-orange-personalized'>Ver Más</button>
+                            }}  className="px-1 py-2 text-white font-semibold text-xs rounded-md bg-slate-400">VER MÁS</button>
+
+                            {typeModal == "Technical" ? (<button onClick={()=>{setUbication(ubicateClient)}} className="px-3 py-0.5 text-white font-semibold text-xs rounded-md bg-cyan-personalized">VER EN<br />MAPA</button>
+                            ) : (
+                                <button onClick={cancelPetition} className='p-2 text-gray-500 rounded-md bg-gray-300 mr-5'>
+                                    Cancelar
+                                </button>
+                            )}
+
                         </div>
                     </div>
                 </div>
             </div>
 
-            {viewModalInformationTarifa ? <ModalInformationTarifa  directRequestId={e.id} onClose={() => {
+            
+            {viewModalInformationTarifa ? <ModalInformationTarifa directRequestId={e.id} onClose={() => {
                 setModalInformationTarifa(false)
             }} /> : ""}
 
