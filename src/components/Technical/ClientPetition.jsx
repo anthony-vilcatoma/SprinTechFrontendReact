@@ -21,7 +21,7 @@ export default function ClientPetition({ technicalId,requestClients,changeReques
 
               {requestClients.map((e,index)=>
               (
-                <ProblemClientComponent setUbication={(data)=>{
+                <ProblemClientComponent key={index} setUbication={(data)=>{
                   setUbication(data)}} e={e} typeModal={"Technical"}/>
 
               ))}

@@ -4,9 +4,9 @@ import { getUserInformation } from '../../apis/Client/UserApi';
 import { updateTechnicalUbication, updateWorkingStatus } from '../../apis/Client/TechnicalsApi';
 import { getUserLocation } from '../../assets/js/userLocation';
 import '../../assets/css/requestClient.css'
-import { MapComponent } from '../../components/Client/MapComponenet';
 import ClientPetition from '../../components/Technical/ClientPetition';
 import DropDownStateRequest from '../../components/Technical/DropDownStateRequest';
+import { MapComponentTechnical } from '../../components/Technical/MapComponentTechnical';
 export default function RequestClientsPage() {
   const [renderComponenet, setRenderComponent] = useState(true);
   const [viewUbicateMap,setViewUbicateMap] = useState({
@@ -103,7 +103,8 @@ export default function RequestClientsPage() {
                 </div>
               </div>
               <div id="tipo-solicitud" className="flex justify-center items-center shadow-personalized bg-white rounded-2xl h-20">
-                <DropDownStateRequest technicalId={technicalId} changeRequests={(data)=>{
+                <DropDownStateRequest setUbication={(data)=>{
+                setViewUbicateMap(data)}} technicalId={technicalId} changeRequests={(data)=>{
                 setRequestClients(data)
               }}/>
               </div>
@@ -111,7 +112,7 @@ export default function RequestClientsPage() {
                 <p className="text-sm">Este mapa te facilitará encontrar rápidamente la ubicación de cualquier solicitud que te hayan hecho.</p>
                 <div className='w-full' style={{ height:'30rem' }}> 
                 {workingStatus ? (<>
-                  <MapComponent  posibleLocation={
+                  <MapComponentTechnical  posibleLocation={
                                 {
                                   lat:viewUbicateMap.lat,
                                   lng:viewUbicateMap.lng,

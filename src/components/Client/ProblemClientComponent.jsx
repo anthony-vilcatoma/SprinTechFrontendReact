@@ -3,12 +3,14 @@ import { ModalInformationProblem } from './ModalInformationProblem';
 import { ModalTarifaComponent } from '../Technical/ModalTarifaComponent';
 import { ModalInformationTarifa } from '../../components/ModalInformationTarifa'
 import { changeStateDirectRequest } from '../../apis/Client/DirectRequest';
+import { ModalMap } from '../Technical/ModalMap';
 export const ProblemClientComponent = ({ e, typeModal,setUbication }) => {
     const id=e.id
     const ubicateClient  = {lat:e.latitude,lng:e.longitude}
     const [modalTarifa, setModalTarifa] = useState(false);
     const [showModalInformation, setShowModalInformation] = useState(false);
     const [viewModalInformationTarifa, setModalInformationTarifa] = useState(false);
+    const [viewMap,setViewMap] = useState(false);
     console.log("compilando componente")
     function cancelPetition(){
         const access_token = window.localStorage.getItem("access_token")
@@ -19,7 +21,9 @@ export const ProblemClientComponent = ({ e, typeModal,setUbication }) => {
         <>
 
             <div id="solicitud" className="flex relative flex-row h-40	 h-max-44 shadow-solicitud rounded-2xl p-4">
-                {e.stateInvoice == "1" ? (<button onClick={() => { setModalInformationTarifa(true) }} className='absolute top-2 right-5 bg-gray-200 rounded-md p-1 block'><i class='bx bx-spreadsheet text-2xl' ></i></button>) : ""}
+                {e.stateInvoice == "1" ? (<button onClick={() => { setModalInformationTarifa(true) }} className='absolute top-2 right-5 bg-gray-200 rounded-md p-1 block'><i className='bx bx-spreadsheet text-2xl' ></i></button>) : ""}
+                {typeModal=="Technical" ? "" : (<>{e.state.id == 2 ? (<button onClick={() => { setViewMap(true) }} className='absolute top-2 right-14 bg-gray-200 rounded-md p-1 block text-2xl'><i className='bx bx-map-alt' ></i></button>) : ""}</>)}
+
                 <img width="163" style={{ height: '123px' }} className="rounded-lg" src={`data:${e.files[0].contentType};base64,${e.files[0].file}`} alt="" />
                 <div className="pl-4 flex flex-col justify-between">
                     <div id="head-card" className="flex flex-row justify-between gap-x-4">
@@ -32,7 +36,7 @@ export const ProblemClientComponent = ({ e, typeModal,setUbication }) => {
                                 ""
                             ) : (
                                 <>
-                                    {typeModal === "Technical" ? (
+                                    {typeModal === "Technical"  && e.stateInvoice == 0  ? (
                                         <button onClick={() => {
                                             setModalTarifa(true);
                                         }} className="px-1 py-2 rounded-md text-sm bg-personalized font-semibold text-white">COTIZAR</button>
@@ -65,7 +69,7 @@ export const ProblemClientComponent = ({ e, typeModal,setUbication }) => {
             </div>
 
             
-            {viewModalInformationTarifa ? <ModalInformationTarifa directRequestId={e.id} onClose={() => {
+            {viewModalInformationTarifa ? <ModalInformationTarifa  type={typeModal} directRequestId={e.id} onClose={() => {
                 setModalInformationTarifa(false)
             }} /> : ""}
 
@@ -77,6 +81,15 @@ export const ProblemClientComponent = ({ e, typeModal,setUbication }) => {
                 setModalTarifa(false)
             }} /> : ""}
 
+            {
+                viewMap ? <ModalMap onClose={()=>{setViewMap(false)}} posibleLocation={
+                    {
+                        lat:12.232323,
+                        lng:72.232323
+                    }
+                }/> :""
+            }
+            
         </>
     )
 }

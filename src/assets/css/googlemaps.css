@@ -8,5 +8,10 @@
   
   /* Contenido del InfoWindow */
   .gm-style-iw div {
-    padding: 10px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding:5px;
+    overflow: auto !important;
   }

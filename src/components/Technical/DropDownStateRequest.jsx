@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { showAllDirectRequestToOneTechnical, showAllDirectRequestToOneTechnicalAlreadyInvoice } from '../../apis/Client/DirectRequest';
-export default function DropDownStateRequest({ changeRequests,technicalId }) {
+export default function DropDownStateRequest({ changeRequests,technicalId,setUbication }) {
     const [optionSelected, setOptionSelected] = useState();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -13,6 +13,7 @@ export default function DropDownStateRequest({ changeRequests,technicalId }) {
             .then(res => {
                 changeRequests(res.data.body)
                 console.log(res.data.body)
+                setUbication({lat:null,lng:null})
             })
     }
 
@@ -21,6 +22,8 @@ export default function DropDownStateRequest({ changeRequests,technicalId }) {
         showAllDirectRequestToOneTechnical(token, technicalId, 1)
             .then(res => {
                 changeRequests(res.data.body)
+                setUbication({lat:null,lng:null})
+
             })
     }
 
@@ -29,6 +32,7 @@ export default function DropDownStateRequest({ changeRequests,technicalId }) {
         showAllDirectRequestToOneTechnicalAlreadyInvoice(token, technicalId, 2)
             .then(res => {
                 changeRequests(res.data.body)
+                setUbication({lat:null,lng:null})
             })
     }
     console.log("cambia de estado")

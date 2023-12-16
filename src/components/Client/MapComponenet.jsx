@@ -2,21 +2,19 @@ import { useEffect } from "react";
 import { getUserLocation } from '../../assets/js/userLocation';
 import banderita from '../../assets/images/banderita.png'
 
-export function MapComponent({ setUbication, posibleLocation }) {
-    var locateP = posibleLocation
+export function MapComponent({setUbication}){
 
-    const initializeMap = async (locate) => {
-
+    const initializeMap = async () => {
         try {
             const userLocation = await getUserLocation();
 
             const map = new google.maps.Map(document.getElementById('mapa_local'), {
-                center: locate.lat!=null ? locate : userLocation,
-                zoom: 13
+                center: userLocation,
+                zoom: 15
             });
             const iconSize = new window.google.maps.Size(35, 40);
+
             let marker = new google.maps.Marker({
-                position:locate,
                 map: map,
                 icon: {
                     url: banderita,
@@ -33,7 +31,7 @@ export function MapComponent({ setUbication, posibleLocation }) {
             google.maps.event.addListener(map, 'click', function (event) {
                 marker.setPosition(event.latLng);
                 marker.setMap(map);
-                setUbication(marker.getPosition().lat(), marker.getPosition().lng())
+                setUbication(marker.getPosition().lat(),marker.getPosition().lng())
             });
 
             marker.addListener('dragend', function (event) {
@@ -44,21 +42,22 @@ export function MapComponent({ setUbication, posibleLocation }) {
         }
     };
 
-    useEffect(() => {
-            console.log("renderizando")
-            initializeMap(locateP);
+    useEffect(()=>{
         
+            // If the script is already loaded, directly initialize the map
+            initializeMap();
 
-    });
+
+
+    }, []); 
     return (
         <div className="map w-full h-full bg-gray-400 rounded-lg">
             <div id='mapa_local' className="mapa_local w-full rounded-lg h-full bg-gray-400 shadow-2xl">
-
-
+            
 
             </div>
-
-
+            
+             
         </div>
     );
 }

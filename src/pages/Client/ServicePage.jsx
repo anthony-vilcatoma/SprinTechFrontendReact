@@ -360,7 +360,6 @@ export function ServicePage() {
                                         <select
                                             {...registerForm("location", {required:true})}
                                             onChange={handleInputSelectLocation}
-                                            value={dataApiProcedure.location || ''}
                                             className="form-select-map  py-3 px-4 block border-gray-200 rounded-md text-base w-full 
                                     focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5">
                                             <option disabled value="">Elige tu Ubicación</option>
