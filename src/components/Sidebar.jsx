@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import '../assets/css/sidebar.css'
-import logo from '../assets/images/logoUniway.jpg'
-import { Link, useNavigate } from 'react-router-dom';
+import logo from '../assets/images/logoUniWay.jpg'
+import { Link,  } from 'react-router-dom';
 export function Sidebar() {
     const token = window.localStorage.getItem("access_token");
     const decodedToken = JSON.parse(atob(token.split('.')[1]));
