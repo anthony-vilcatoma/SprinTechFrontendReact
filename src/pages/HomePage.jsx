@@ -1,12 +1,30 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import '../assets/css/home.css'; // Importa tus estilos CSS personalizados
 import imagenLogo from '../assets/images/logo-springtec.svg'; // Importa la imagen del logo
 import imagenTecnicos1 from '../assets/images/tecnicos1.svg'; // Importa la imagen de tecnicos1
 import imagenTestimonio1 from '../assets/images/testimonio1.svg'; // Importa la imagen de testimonio1
 import imagenEstrellas from '../assets/images/img-estrellas.svg'; // Importa la imagen de estrellas
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export const HomePage = () => {
+  const navigate = useNavigate();
+
+  const token = window.localStorage.getItem("access_token");
+  useEffect(()=>{
+    if(token){
+      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      const role = decodedToken.roleId;
+      if(role==1){
+        navigate("/buscar-tecnico")
+      }
+      if(role==2){
+        navigate("/solicitudes-recibidas")
+      }
+      if(role==3){
+        navigate("/lista-reclamos")
+      }
+    }
+  })
   return (
     <>
     <div className="home-page">
@@ -23,11 +41,11 @@ export const HomePage = () => {
                 <li className="hover:text-gray-400">Contact</li>
               </ul>
               <div>
-                <Link to={"/login"} className="bg-personalized rounded px-4 py-1.5 text-white font-semibold mr-1">
+                <Link to={"/iniciar-session"} className="bg-personalized rounded px-4 py-1.5 text-white font-semibold mr-1">
                 Login
 
                 </Link>
-                <Link to={"/register"} className="bg-personalized rounded px-4 py-1.5 text-white font-semibold">
+                <Link to={"/registrar"} className="bg-personalized rounded px-4 py-1.5 text-white font-semibold">
                   Register
                 </Link>
               </div>
@@ -44,12 +62,12 @@ export const HomePage = () => {
               Tu Plataforma de Confianza para Reparaciones <br /> y Mantenimiento en el Hogar
             </p>
             <div className="flex flex-row mt-8 gap-x-4">
-              <a href='service' className="bg-personalized rounded-lg px-4 py-1.5 text-white font-semibold text-xs flex w-32 text-center">
+              <Link to={'/buscar-tecnico'} className="bg-personalized rounded-lg px-4 py-1.5 text-white font-semibold text-xs flex w-32 text-center">
                 CONTACTA A UN TÉCNICO
-              </a>
-              <a   className="bg-personalized rounded-lg px-4 py-1.5 text-white font-semibold text-xs flex w-32 text-center">
+              </Link>
+              <Link to={"/iniciar-session"}  className="bg-personalized rounded-lg px-4 py-1.5 text-white font-semibold text-xs flex w-32 text-center">
                 ¡TRABAJA CON NOSOTROS!
-              </a>
+              </Link>
             </div>
           </div>
           <img src={imagenTecnicos1} width="500" alt="Técnicos" />

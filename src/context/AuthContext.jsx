@@ -123,6 +123,8 @@ export const AuthProvider = ({children}) => {
       if (decodedToken.roleId in [2,1]){
         checkLogin()
       }
+    }else{
+      checkLogin()
     }
     // EJECUTAMOS LA FUNCION ASINCRONA
   },[])  

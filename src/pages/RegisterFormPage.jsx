@@ -11,7 +11,7 @@ export function RegisterFormPage(){
 
 
     useEffect( () => {
-        if (isAuthenticated) navigate('/configuration')
+        if (isAuthenticated) navigate('/configuracion')
     },[isAuthenticated]) // se ejecutará si isAuthenticated cambia
 
     // handleSubmit: procesa los datos del formulario y realiza la lógica necesaria al enviar el formulario.
@@ -36,7 +36,7 @@ export function RegisterFormPage(){
                     <img src="/logo.svg" alt="" />
                     <h1 className="text-xl md:text-2xl font-bold leading-tight mt-3 mb-2">Sign Up</h1>
                     <p>
-                        ¿Ya tienes una cuenta? <Link  to="/login" className="text-blue-500 font-semibold">Sign Up</Link>
+                        ¿Ya tienes una cuenta? <Link  to="/iniciar-session" className="text-blue-500 font-semibold">Sign Up</Link>
                     </p>
                     <form className="mt-6" onSubmit={onSubmit}>
                         {

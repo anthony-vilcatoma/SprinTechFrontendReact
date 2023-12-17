@@ -7,6 +7,8 @@ import { createProfession, deleteProfessionAvailabilityById, getAllProfessionByT
 import { getUserInformation } from '../../apis/Client/UserApi';
 
 export default function ModalUpdateProfession({ tecnicoId,open, close, reloadComponent,professionAvailabilityId}) {
+    const [stateWidth,setStateWidth] = useState(true);
+    const sizeModal = stateWidth ? "sm" : "2xl"
 
     const [availabilities, setAvailabilites] = useState([]);
     const [experiences, setExperiences] = useState([]);
@@ -42,6 +44,12 @@ export default function ModalUpdateProfession({ tecnicoId,open, close, reloadCom
         //event.target para acceder a las propiedades y valores específicos del elemento que causó el evento.
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
+        if(name=="availabilityId" && value==2 || value=="ambas"){
+            setStateWidth(false);
+        }
+        if(name=="availabilityId" && value==1){
+            setStateWidth(true);
+        }
     };
 
 
@@ -256,8 +264,8 @@ export default function ModalUpdateProfession({ tecnicoId,open, close, reloadCom
 
     }, [])
     return (
-        <Modal show={true} onClose={open} className='w-fit mx-auto' style={{ fontFamily: 'Urbanist, sans-serif' }}>
-            <Modal.Body className="p-10 relative">
+        <Modal show={true} onClose={open} size={sizeModal} style={{ fontFamily: 'Urbanist, sans-serif' }}>
+            <Modal.Body className="relative flex flex-col justify-center items-center">
                 <button className="absolute top-5 right-5"><i class='bx bxs-x-circle text-3xl' onClick={close} ></i></button>
                 <h1 className="font-bold text-xl mx-auto text-center mb-5">Editar Professión</h1>
 

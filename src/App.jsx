@@ -22,19 +22,19 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginFormPage />} />
-          <Route path="/register" element={<RegisterFormPage />} />
+          <Route path="/iniciar-session" element={<LoginFormPage />} />
+          <Route path="/registrar" element={<RegisterFormPage />} />
 
           {/* ProtectedRoute: verificará si el usuario esta authentificado */}
           <Route element={<ProtectedRoute/>} >
-            <Route path="/configuration"  element={<ConfigurationPage/>}/>
-            <Route path="/service"element={<ServicePage />} />
-            <Route  path="/requestClientView" element={<RequestClientsPage/>}/>
-            <Route  path="/mypetitions" element={<ClientPetitiosPage/>}/>
-            <Route path="/supportList" element={<TicketsPage/>}/>
-            <Route  path="/ticketsupport" element={<TicketSupportPage/>}/>
+            <Route path="/configuracion"  element={<ConfigurationPage/>}/>
+            <Route path="/buscar-tecnico"element={<ServicePage />} />
+            <Route  path="/solicitudes-recibidas" element={<RequestClientsPage/>}/>
+            <Route  path="/mis-solicitudes" element={<ClientPetitiosPage/>}/>
+            <Route path="/lista-reclamos" element={<TicketsPage/>}/>
+            <Route  path="/ticket-reclamo" element={<TicketSupportPage/>}/>
             <Route path='/atenttion/:id' element={<AnswerSuportPage/>}/>
-            <Route path='/service/configuration' element={<TechnicalServicePage/>}/>
+            <Route path='/servicio/configuracion' element={<TechnicalServicePage/>}/>
           </Route>
         </Routes>
       </BrowserRouter>

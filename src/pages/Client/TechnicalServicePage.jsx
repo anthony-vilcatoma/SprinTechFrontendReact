@@ -4,8 +4,11 @@ import { useState } from 'react';
 import ProfessionServiceComponent from '../../components/Technical/ProfessionServiceComponent';
 import { getAllProfessionByTechnical } from '../../apis/Client/ProfessionApi';
 import { getUserInformation } from '../../apis/Client/UserApi';
+import {  useNavigate } from 'react-router-dom';
 export default function TechnicalServicePage() {
+    const navigate = useNavigate();
 
+    
     const [professionServices, setProfessionServices] = useState([]);
     const [technicalId,setTechnicalId] = useState();
 
@@ -21,7 +24,13 @@ export default function TechnicalServicePage() {
     useEffect(() => {
         const token = window.localStorage.getItem("access_token");
         const decodedToken = JSON.parse(atob(token.split('.')[1]));
-
+        const role = decodedToken.roleId;
+        if(role==1){
+            navigate('/buscar-tecnico')
+        }        
+        else if(role==3){
+            navigate('/lista-reclamos')
+        }
         getUserInformation(decodedToken.sub, token)
             .then(res =>{
                 setTechnicalId(res.data.body.id)

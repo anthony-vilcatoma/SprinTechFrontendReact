@@ -12,7 +12,7 @@ function ProtectedRoute() {
   if (!loading && !isAuthenticated) {
      console.log("Redirige a login")
     // replace: reemplazará la ruta a /login si es que se intenta retroceder(en caso acaba de hacer LOGOUT)
-    return <Navigate to='/login' replace />
+    return <Navigate to='/iniciar-session' replace />
   }
 
   // Si ya no se esta cargando y ESTA AUTHENTICADO...

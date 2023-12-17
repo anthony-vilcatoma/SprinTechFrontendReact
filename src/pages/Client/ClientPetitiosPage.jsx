@@ -3,11 +3,13 @@ import { showAllDirectRequestToOneClient } from '../../apis/Client/DirectRequest
 import { getUserInformation } from '../../apis/Client/UserApi'
 import { LayaoutDashboard } from '../../components/LayaoutDashboard'
 import { ProblemClientComponent } from '../../components/Client/ProblemClientComponent';
+import { useNavigate } from 'react-router-dom';
 
 export default function ClientPetitiosPage() {
     const [directRequestAll, setDirectRequest] = useState([]);
     const [clientId, setClientId] = useState([]);
     console.log(directRequestAll)
+    const navigate = useNavigate();
 
 
     const showAllRequestInProcess = () => {
@@ -27,7 +29,13 @@ export default function ClientPetitiosPage() {
     useEffect(() => {
         const access_token = window.localStorage.getItem("access_token")
         const decodedToken = JSON.parse(atob(access_token.split('.')[1]));
-
+        const role = decodedToken.roleId;
+        if(role==2){
+            navigate('/solicitudes-recibidas')
+        }        
+        else if(role==3){
+            navigate('/lista-reclamos')
+        }
         getUserInformation(decodedToken.sub, access_token)
             .then(res => {
                 setClientId(res.data.body.id)
@@ -51,9 +59,9 @@ export default function ClientPetitiosPage() {
                 </div>
             </div>
             <div className="w-6/12  flex flex-col gap-y-7 justify-between mx-auto py-5 bg-white shadow-personalized rounded-2xl px-4">
-                {directRequestAll.map(e => (
+                {directRequestAll.map((e,index) => (
 
-                    <ProblemClientComponent e={e} />
+                    <ProblemClientComponent key={index} e={e} />
                 ))}
             </div>
 

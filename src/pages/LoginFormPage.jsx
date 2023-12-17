@@ -17,10 +17,10 @@ export function LoginFormPage() {
             const decodedToken = JSON.parse(atob(accessToken.split('.')[1]));
             const role = decodedToken.roleId;
             if(role==1){
-                navigate('/service')
+                navigate('/buscar-tecnico')
             }        
             else if(role==2){
-                navigate('/requestClientView')
+                navigate('/solicitudes-recibidas')
             }
             else{
                 navigate('/atenttion/1')
@@ -136,7 +136,7 @@ export function LoginFormPage() {
                     <hr className="my-6 border-gray-300 w-full" />
 
                     <p className="mt-8">
-                        ¿Necesitas una cuenta? <Link to="/register" className="text-blue-500 hover:text-blue-700 font-semibold">Crea una cuenta</Link>
+                        ¿Necesitas una cuenta? <Link to="/registrar" className="text-blue-500 hover:text-blue-700 font-semibold">Crea una cuenta</Link>
                     </p>
                 </div>
             </div>

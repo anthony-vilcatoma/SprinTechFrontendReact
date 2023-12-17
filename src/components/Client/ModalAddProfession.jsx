@@ -7,14 +7,14 @@ import { getAvailabilities } from '../../apis/Client/AvailavilityApi';
 import { MapComponent } from './MapComponenet';
 import { Navigate } from 'react-router-dom';
 
-export default function ModalAddProfession({ open, close, reloadComponent,professionsExistAlready,technicalId}) {
+export default function ModalAddProfession({ open, close, reloadComponent, professionsExistAlready, technicalId }) {
 
     const [professions, setProfessions] = useState([]);
     const [availabilities, setAvailabilites] = useState([]);
     const [experiences, setExperiences] = useState([]);
-
+    const [stateWidth, setStateWidth] = useState(true);
     const [formData, setFormData] = useState({
-        technicalId:technicalId,
+        technicalId: technicalId,
         professionId: null,
         availabilityId: null,
         experienceId: null,
@@ -25,7 +25,7 @@ export default function ModalAddProfession({ open, close, reloadComponent,profes
     //AQUI ALMACENO LAS PROFESSIONES QUE YA TIENE EL USUARIO
     const professionsHasUser = [];
     professionsExistAlready.forEach(element => {
-       professionsHasUser.push(element.profession.name)
+        professionsHasUser.push(element.profession.name)
     });
 
     //Aqui filtro e unifico esas profesiones
@@ -34,17 +34,23 @@ export default function ModalAddProfession({ open, close, reloadComponent,profes
     //professionsSHOW SON LAS PROFESIONES QUE TENDRA COMO OPCION EL TECNICO, es decir las que no tiene!
     const professionsShow = professions.filter(element => {
         return !arraySinDuplicados.includes(element.name);
-      }).map(element => element);
+    }).map(element => element);
 
 
-    
 
-      // un evento representa todo cambio en html(input,click etc)
+
+    // un evento representa todo cambio en html(input,click etc)
     //event contiene información sobre el evento, como el tipo de evento (cambio, clic, etc.)
     const handleInputChange = (event) => {
         //event.target para acceder a las propiedades y valores específicos del elemento que causó el evento.
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
+        if(name=="availabilityId" && value==2 || value=="ambas"){
+            setStateWidth(false);
+        }
+        if(name=="availabilityId" && value==1){
+            setStateWidth(true);
+        }
     };
 
 
@@ -53,7 +59,7 @@ export default function ModalAddProfession({ open, close, reloadComponent,profes
         try {
             if (formData.availabilityId == 1) {
                 createProfession(token, {
-                    technicalId:formData.technicalId,
+                    technicalId: formData.technicalId,
                     professionId: formData.professionId,
                     availabilityId: formData.availabilityId,
                     experienceId: formData.experienceId,
@@ -74,14 +80,14 @@ export default function ModalAddProfession({ open, close, reloadComponent,profes
 
             if (formData.availabilityId == 'ambas') {
                 createProfession(token, {
-                    technicalId:formData.technicalId,
+                    technicalId: formData.technicalId,
                     professionId: formData.professionId,
                     availabilityId: 1,
                     experienceId: formData.experienceId,
                 }, technicalId)
 
                 createProfession(token, {
-                    technicalId:formData.technicalId,
+                    technicalId: formData.technicalId,
                     professionId: formData.professionId,
                     availabilityId: 2,
                     experienceId: formData.experienceId,
@@ -123,9 +129,12 @@ export default function ModalAddProfession({ open, close, reloadComponent,profes
         }
 
     }, [])
+    const handleAmbasModalidadesClick = () => {
+        setStateWidth(false);
+      };
     return (
-        <Modal show={true} onClose={open}  size={"md"} style={{ fontFamily: 'Urbanist, sans-serif' }}>
-            <Modal.Body className='w-fit mx-auto'>
+        <Modal show={true} onClose={open} size={stateWidth ? "sm" : "2xl"} style={{ fontFamily: 'Urbanist, sans-serif' }}>
+            <Modal.Body className="relative flex flex-col justify-center items-center">
                 <button className="absolute top-5 right-5"><i className='bx bxs-x-circle text-3xl' onClick={close} ></i></button>
                 <h1 className="font-bold text-xl mx-auto text-center mb-5">Agregar Professión</h1>
 
@@ -138,7 +147,7 @@ export default function ModalAddProfession({ open, close, reloadComponent,profes
                             className=" bg-gray-200 text-gray-600 block mx-auto mb-5 p-2 block w-full border-gray-200 rounded-md text-base 	
                             focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400   ">
                             <option disabled value="selected">Seleccione su profession</option>
-                            {professionsShow.map(element=>
+                            {professionsShow.map(element =>
                                 <option key={element.id} value={element.id}>{element.name}</option>)}
 
                         </select>
@@ -155,17 +164,25 @@ export default function ModalAddProfession({ open, close, reloadComponent,profes
 
                         </select>
 
-                        <select onChange={handleInputChange}
-                            value={formData.availabilityId|| 'selected'} // Usa value en lugar de selected
+                        <select
+                            onChange={handleInputChange}
+                            value={formData.availabilityId || 'selected'}
                             name='availabilityId'
-                            className="   bg-gray-200  text-gray-600 mb-5 p-2 block w-full border-gray-200 rounded-md text-base 	
-                            focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400   ">
-                            <option disabled  value="selected">Seleccione su disponibilidad</option>
-                            {availabilities.map(element => (<option key={element.id} value={element.id} >{element.name}</option>))}
-                            <option value="ambas">Ambas Modalidades</option>
-
-
-
+                            className="bg-gray-200 text-gray-600 mb-5 p-2 block w-full border-gray-200 rounded-md text-base focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
+                        >
+                            <option disabled value="selected">Seleccione su disponibilidad</option>
+                            {availabilities.map(element => (
+                                element.id === 2 ? (
+                                    <option key={element.id} value={element.id}>
+                                        {element.name}
+                                    </option>
+                                ) : (
+                                    <option key={element.id} value={element.id}>
+                                        {element.name}
+                                    </option>
+                                )
+                            ))}
+                            <option value="ambas" >Ambas Modalidades</option>
                         </select>
 
                         <button className="bg-orange-personalized p-2 px-4 w-full rounded-md text-white" onClick={submitForm}>¡Registrar!</button>

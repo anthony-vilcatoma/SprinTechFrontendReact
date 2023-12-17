@@ -17,13 +17,18 @@ import { TechnicalDiv } from '../../components/Client/TechnicalDiv';
 import TechnicalInformation from '../../components/Client/TechnicalInformation';
 import { createServiceRequest } from '../../apis/Client/DirectRequest';
 import { getUserInformation } from '../../apis/Client/UserApi';
+import TechnicalInformationPlantilla from '../../components/Client/TechnicalInformationPlantilla';
+import { useNavigate } from 'react-router-dom';
 
 
 
 export function ServicePage() {
+    const navigate = useNavigate();
 
     const { register: registerForm, handleSubmit, formState: {errors}, } = useForm() 
 
+    const[showLoadSearching,setShowLoadSearching] = useState(false);
+ 
     //Guardamos el token para poder llenarla en cualquier peticion
     const accessToken = localStorage.getItem("access_token");
     const decodedToken = JSON.parse(atob(accessToken.split('.')[1]));
@@ -62,7 +67,7 @@ export function ServicePage() {
         setFormValues(updatedFormValues);
     };
 
-    console.log('Datos del formulario:', formValues);
+
 
 
 
@@ -167,7 +172,6 @@ export function ServicePage() {
 
 
     const loadNewMap = handleSubmit(async (data) => {
-        console.log("DATA NEW",data);
         try {
 
             const map = new window.google.maps.Map(document.getElementById("map"), {
@@ -192,12 +196,9 @@ export function ServicePage() {
             infoWindow.open(map, userMarker);
 
 
-            console.log(dataApiProcedure, "xsadasd")
-
             //Cargando a todos los tecnicos 
             getTechnicallsByLocation(accessToken, dataApiProcedure.professionId, dataApiProcedure.availabilityId, dataApiProcedure.latitude, dataApiProcedure.longitude, dataApiProcedure.distance)
                 .then(data => {
-                    console.log("TECHNICALS",data.data.body);
                     const technicals = data.data.body;
                     setTechnicals(technicals)
                     technicals.forEach(element => {
@@ -214,18 +215,24 @@ export function ServicePage() {
                         }
 
                     })
+                    setShowLoadSearching(true);
                 })
 
 
         } catch (error) {
             console.error("Error occurred while initializing map:", error);
         }
-        console.log(formValues)
     });
 
 
     useEffect(() => {
-
+        const role = decodedToken.roleId;
+        if(role==2){
+            navigate('/solicitudes-recibidas')
+        }        
+        else if(role==3){
+            navigate('/solicitudes-recibidas')
+        }
         try {
             getProfessions(accessToken)
                 .then(data => {
@@ -362,7 +369,7 @@ export function ServicePage() {
                                             onChange={handleInputSelectLocation}
                                             className="form-select-map  py-3 px-4 block border-gray-200 rounded-md text-base w-full 
                                     focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 sm:p-5">
-                                            <option disabled value="">Elige tu Ubicación</option>
+                                            <option disabled selected value="">Elige tu Ubicación</option>
                                             <option value="1">Mi ubicación</option>
                                             <option value="2">Otra Ubicación</option>
                                         </select>
@@ -386,16 +393,15 @@ export function ServicePage() {
 
 
 
-                            <button className="boton_buscar block w-9/12 font-bold	 text-2xl p-3 mx-auto rounded-md">BUSCAR
+                            <button  className="boton_buscar block w-9/12 font-bold	text-2xl p-3 mx-auto rounded-md">BUSCAR
                                 ESPECIALISTAS</button>
                         </form>
                         {/*-------------------- END FORM -----------------------------*/}
                     </div>
                 </div>
 
-
-                <div className="container flex mx-auto justify-around w-11/12">
-                    {loadInformation ? (<h1>Cargando</h1>) : (<TechnicalInformation 
+                {showLoadSearching ? (<div className="container flex mx-auto justify-around w-11/12">
+                    {loadInformation ? (<TechnicalInformationPlantilla/>) : (<TechnicalInformation 
                      formData={{professionAvailabilityId: technicalInformation.professionAvailabilityId,
                         clientId: dataApiProcedure.clienteId,
                         serviceTypeAvailabilityId: null,
@@ -451,7 +457,8 @@ export function ServicePage() {
 
 
                     </div>
-                </div>
+                </div>):""}
+                
             </div>
 
         </LayaoutDashboard>
