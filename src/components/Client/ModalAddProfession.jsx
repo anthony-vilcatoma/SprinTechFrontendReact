@@ -53,6 +53,7 @@ export default function ModalAddProfession({ open, close, reloadComponent,profes
         try {
             if (formData.availabilityId == 1) {
                 createProfession(token, {
+                    technicalId:formData.technicalId,
                     professionId: formData.professionId,
                     availabilityId: formData.availabilityId,
                     experienceId: formData.experienceId,
@@ -73,12 +74,14 @@ export default function ModalAddProfession({ open, close, reloadComponent,profes
 
             if (formData.availabilityId == 'ambas') {
                 createProfession(token, {
+                    technicalId:formData.technicalId,
                     professionId: formData.professionId,
                     availabilityId: 1,
                     experienceId: formData.experienceId,
                 }, technicalId)
 
                 createProfession(token, {
+                    technicalId:formData.technicalId,
                     professionId: formData.professionId,
                     availabilityId: 2,
                     experienceId: formData.experienceId,
