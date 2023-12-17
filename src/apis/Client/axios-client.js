@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'http://ec2-3-85-56-77.compute-1.amazonaws.com:8080/api/v1', // Este será el dominio base
+  baseURL: 'https://obedient-bath-production.up.railway.app/api/v1', // Este será el dominio base
   headers: {
     'Content-Type': 'application/json'
   }

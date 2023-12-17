@@ -12,7 +12,7 @@ import banderita from '../../assets/images/banderita.png'
 import { DirectRequestModal } from '../../components/DirectRequestModal';
 
 import { getCategoriesByService, getProfessions } from '../../apis/Client/ProfessionApi';
-import { getAllOptionsAvailability } from '../../apis/Client/availability';
+import { getAllOptionsAvailability } from '../../apis/Client/Availability';
 import { TechnicalDiv } from '../../components/Client/TechnicalDiv';
 import TechnicalInformation from '../../components/Client/TechnicalInformation';
 import { createServiceRequest } from '../../apis/Client/DirectRequest';

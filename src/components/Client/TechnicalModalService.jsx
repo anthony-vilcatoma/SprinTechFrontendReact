@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Modal } from 'flowbite-react';
-import { getAllOptionsAvailability } from '../../apis/Client/availability';
-import { getAllProfessionByTechnical, getCategoriesByService, getProfessionsAvaialbilitiesByTechnicalIdAndProfessionId } from '../../apis/Client/ProfessionApi';
+import { getCategoriesByService, getProfessionsAvaialbilitiesByTechnicalIdAndProfessionId } from '../../apis/Client/ProfessionApi';
 import { createServicebyProfession } from '../../apis/Client/ServiceProfession';
 
 export default function TechnicalModalService({ open, close, professionId,render,technicalId}) {
