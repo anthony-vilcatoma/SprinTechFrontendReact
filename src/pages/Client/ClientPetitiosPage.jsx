@@ -4,8 +4,9 @@ import { getUserInformation } from '../../apis/Client/UserApi'
 import { LayaoutDashboard } from '../../components/LayaoutDashboard'
 import { ProblemClientComponent } from '../../components/Client/ProblemClientComponent';
 import { useNavigate } from 'react-router-dom';
-
+import toast, { Toaster } from 'react-hot-toast';
 export default function ClientPetitiosPage() {
+    const [renderComponent, setRendeComponenet] = useState(false);
     const [directRequestAll, setDirectRequest] = useState([]);
     const [clientId, setClientId] = useState([]);
     console.log(directRequestAll)
@@ -45,9 +46,10 @@ export default function ClientPetitiosPage() {
                     .then(res => setDirectRequest(res.data.body))
             })
 
-    }, [])
+    }, [renderComponent])
     return (
         <LayaoutDashboard>
+            <Toaster />
             <div className="mt-10 flex  justify-between mx-auto rounded-xl max-w-4xl  w-8/12 mb-10">
                 <div className="searching w-5/12">
                     <input type="text" className='w-8/12 mr-5 border-none rounded-lg text-gray-600 border-gray-200' />
@@ -61,7 +63,15 @@ export default function ClientPetitiosPage() {
             <div className="w-6/12  flex flex-col gap-y-7 justify-between mx-auto py-5 bg-white shadow-personalized rounded-2xl px-4">
                 {directRequestAll.map((e,index) => (
 
-                    <ProblemClientComponent key={index} e={e} />
+                    <ProblemClientComponent    showIsPending={()=>{
+                        showAllRequestInPending();
+                    }} showInProcess = {()=>{
+                        showAllRequestInProcess();
+                    }}   toastButton ={(data)=>{
+                        data();
+                    }} renderComponent={()=>{
+                        setRendeComponenet(!renderComponent)
+                    }} key={index} e={e} />
                 ))}
             </div>
 

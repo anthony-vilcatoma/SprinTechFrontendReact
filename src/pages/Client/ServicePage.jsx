@@ -19,6 +19,7 @@ import { createServiceRequest } from '../../apis/Client/DirectRequest';
 import { getUserInformation } from '../../apis/Client/UserApi';
 import TechnicalInformationPlantilla from '../../components/Client/TechnicalInformationPlantilla';
 import { useNavigate } from 'react-router-dom';
+import { data } from 'autoprefixer';
 
 
 
@@ -56,18 +57,20 @@ export function ServicePage() {
         images: [],
         clienteId: null,
     });
+    console.log(technicals)
+    console.log(dataApiProcedure)
 
     const [formValues, setFormValues] = useState({
         title: '',
         description: '',
         images: [],
     });
-
     const handleFormValuesUpdate = (updatedFormValues) => {
         setFormValues(updatedFormValues);
     };
 
 
+        console.log(categoryService)
 
 
 

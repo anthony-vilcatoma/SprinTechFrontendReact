@@ -1,7 +1,7 @@
 import { Modal } from 'flowbite-react';
 import { MapComponentTechnical } from './MapComponentTechnical';
 
-export function ModalMap({ onClose, posibleLocation  }) {
+export function ModalMap({ onClose, posibleLocation,type  }) {
 
 
   return (
@@ -11,7 +11,7 @@ export function ModalMap({ onClose, posibleLocation  }) {
           <button className="absolute top-0 right-0"><i class=' bx bxs-x-circle text-3xl' onClick={onClose} ></i></button>
           <h1 className='text-center font-semibold text-xl mb-5'>Ubicación en tiempo real del tecnico</h1>
           <div className="w-100 h-96 ">
-            <MapComponentTechnical posibleLocation={posibleLocation}/>
+            <MapComponentTechnical type={type} posibleLocation={posibleLocation}/>
           </div>
 
 

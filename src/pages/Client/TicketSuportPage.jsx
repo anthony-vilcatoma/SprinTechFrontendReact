@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { LayaoutDashboard } from "../../components/LayaoutDashboard";
 import { createTicketSupport } from "../../apis/Client/TicketApi"
+import { getUserInformation } from "../../apis/Client/UserApi";
+
 export function TicketSupportPage() {
     // Estado para almacenar los datos del usuario y el formulario
     const [formData, setFormData] = useState({
         userId: null,
         issue: "",
         description: "",
-        date: new Date().toISOString().split('T')[0], // Obtener la fecha actual en formato YYYY-MM-DD
+        date: new Date().toLocaleDateString('sv-SE'), // Obtener la fecha actual en formato YYYY-MM-DD
     });
 
 
@@ -16,7 +18,7 @@ export function TicketSupportPage() {
         lastname: "",
         email: "",
         category: "Sistema", // Valor predeterminado para la categoría
-        date: new Date().toISOString().split('T')[0], // Obtener la fecha actual en formato YYYY-MM-DD
+        date: new Date().toLocaleDateString(), // Obtener la fecha actual en formato YYYY-MM-DD
 
     });
 
@@ -27,10 +29,24 @@ export function TicketSupportPage() {
             try {
                 const decodedToken = JSON.parse(atob(accessToken.split('.')[1]));
                 // Actualizar el estado del formulario con los datos del usuario
+                getUserInformation(decodedToken.sub,accessToken)
+                .then(res=>{
+                    const data=res.data.body;
+                    setStaticInformation({...staticInformation,
+                    
+                        name:data.name,
+                        lastname:`${data.lastname} ${data.motherLastname}`,
+                        email:data.user.email,
+
+                    })
+                })
+                
                 setFormData({
+                
                     ...formData,
-                    userId: decodedToken.userId ,
+                    userId: parseInt(decodedToken.sub) ,
                 });
+
                 console.log("Carga útil del token:", decodedToken.roleId);
             } catch (error) {
                 console.error("Error al decodificar el token:", error);
@@ -67,8 +83,9 @@ export function TicketSupportPage() {
                 .then(data => {
                     console.log(data.message);
                 })
+                
         } catch (error) {
-
+            console.log(error)
         }
 
     }
@@ -105,7 +122,7 @@ export function TicketSupportPage() {
                                             <input
                                                 type="text"
                                                 className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-gray-300 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                                                value={formData.name}
+                                                value={staticInformation.name}
                                                 readOnly
                                             />
                                         </div>
@@ -118,7 +135,7 @@ export function TicketSupportPage() {
                                             <input
                                                 type="text"
                                                 className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-gray-300 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                                                value={formData.lastname}
+                                                value={staticInformation.lastname}
                                                 readOnly
                                             />
                                         </div>
@@ -151,7 +168,7 @@ export function TicketSupportPage() {
                                             <input
                                                 type="text"
                                                 className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-gray-300 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                                                value={formData.date}
+                                                value={staticInformation.date}
                                                 readOnly
                                             />
                                         </div>
@@ -164,7 +181,7 @@ export function TicketSupportPage() {
                                             <input
                                                 type="text"
                                                 className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-gray-300 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                                                value={formData.email}
+                                                value={staticInformation.email}
                                                 readOnly
                                             />
                                         </div>

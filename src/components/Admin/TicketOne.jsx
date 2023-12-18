@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export function TicketOne({ name, lastnames, issue, category="Servicio", date, state ,id}) {
     let text = "";
     let etiqueta = "";
@@ -40,7 +42,7 @@ export function TicketOne({ name, lastnames, issue, category="Servicio", date, s
             <td className="px-4 py-3 text-sm border">{date}</td>
 
             <td className="px-4 py-3 text-xs border">
-                <a href={`/atenttion/${id}`}>
+                <Link to={`/atenttion/${id}`}>
                     <button
                         className={etiqueta}
                         style={{ cursor: cursorStyle }}> {/* Establecemos el estilo del cursor aquí */}
@@ -48,7 +50,7 @@ export function TicketOne({ name, lastnames, issue, category="Servicio", date, s
                         className="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
                         <span className="relative">{text}</span>
                     </button>
-                </a>
+                </Link>
             </td>
         </tr>
     );

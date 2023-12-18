@@ -7,6 +7,8 @@ import '../../assets/css/requestClient.css'
 import ClientPetition from '../../components/Technical/ClientPetition';
 import DropDownStateRequest from '../../components/Technical/DropDownStateRequest';
 import { MapComponentTechnical } from '../../components/Technical/MapComponentTechnical';
+import toast, { Toaster } from 'react-hot-toast';
+
 export default function RequestClientsPage() {
   const token = window.localStorage.getItem("access_token");
     const decodedToken = JSON.parse(atob(token.split('.')[1]));
@@ -79,18 +81,21 @@ export default function RequestClientsPage() {
 
     // Limpieza del intervalo cuando el componente se desmonte
     return () => clearInterval(intervalId);
-  }, [technicalId, workingStatus]); // Agregar technicalId como dependencia
+  }, [technicalId, workingStatus,renderComponenet]); // Agregar technicalId como dependencia
 
   console.log(workingStatus)
   return (
     <LayaoutDashboard>
+      <Toaster/>
       <div className="grid place-content-center px-20">
         <div className=''>
           <h1 className="text-2xl font-semibold py-4">Solicitudes entrantes</h1>
           <div className="flex flex-row  gap-x-5" style={{ maxHeight: '880px', maxWidth: '1400px' }}>
             <div className="w-8/12 py-5 bg-white shadow-personalized rounded-2xl px-1">
               <p className="text-sm mb-2 px-5">Al pulsar este botón, otros usuarios podrán visualizar tu ubicación cuando requieran de tus servicios Al pulsar este botón, otros usuarios podrán visualizar tu ubicación cuando requieran de tus servicios</p>
-              {workingStatus ? <ClientPetition setUbication={(data) => {
+              {workingStatus ? <ClientPetition renderComponent={()=>{
+                setRenderComponent(!renderComponenet)
+              }} setUbication={(data) => {
                 setViewUbicateMap(data)
               }} technicalId={technicalId} requestClients={requestClients} changeRequests={(data) => {
                 setRequestClients(data)

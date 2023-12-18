@@ -5,7 +5,7 @@ import { MapComponent } from '../Client/MapComponenet';
 import DropDownStateRequest from './DropDownStateRequest';
 import { ProblemClientComponent } from '../Client/ProblemClientComponent';
 
-export default function ClientPetition({ technicalId,requestClients,changeRequests,setUbication }) {
+export default function ClientPetition({renderComponent, technicalId,requestClients,changeRequests,setUbication }) {
   useEffect(() => {
     const accessToken = localStorage.getItem("access_token");
     showAllDirectRequestToOneTechnical(accessToken, technicalId, 1)
@@ -21,7 +21,9 @@ export default function ClientPetition({ technicalId,requestClients,changeReques
 
               {requestClients.map((e,index)=>
               (
-                <ProblemClientComponent key={index} setUbication={(data)=>{
+                <ProblemClientComponent key={index}  renderComponent={()=>{
+                  renderComponent();
+                }}setUbication={(data)=>{
                   setUbication(data)}} e={e} typeModal={"Technical"}/>
 
               ))}

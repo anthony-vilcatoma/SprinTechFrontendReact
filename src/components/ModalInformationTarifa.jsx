@@ -2,18 +2,29 @@ import { Modal } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { getOneInvoice } from '../apis/Client/Invoice';
 import { changeStateDirectRequest } from '../apis/Client/DirectRequest';
+import toast, { Toaster } from 'react-hot-toast';
 
-export function ModalInformationTarifa({ onClose, directRequestId, type }) {
+export function ModalInformationTarifa({ renderComponent,onClose,e, directRequestId, type,showInProcess,showIsPending }) {
     function acepptedTarifa() {
         const access_token = window.localStorage.getItem("access_token")
         changeStateDirectRequest(access_token, directRequestId, { stateId: 2 })
-            .then(res => onClose())
+            .then(res => {
+                onClose();
+
+                showInProcess();
+                onClose();
+            toast.success('Usted ha aceptado la tarifa del tecnico!');
+    })
     }
 
     function rechazedTarifa() {
         const access_token = window.localStorage.getItem("access_token")
         changeStateDirectRequest(access_token, directRequestId, { stateId: 4 })
-            .then(res => onClose())
+            .then(res => {
+                showIsPending();
+                onClose();
+            toast.success('Usted ha rechazado la tarifa del tecnico!');
+    })
     }
     const [tarifa, setTarifa] = useState({
         id: null,
@@ -29,6 +40,8 @@ export function ModalInformationTarifa({ onClose, directRequestId, type }) {
         getOneInvoice(access_token, directRequestId)
             .then(res => setTarifa(res.data.body[0]))
     }, [])
+
+    console.log(tarifa)
     return (
         <>
             <Modal show={true} onClose={onClose} size="lg" style={{ fontFamily: 'Urbanist, sans-serif' }}>
@@ -68,25 +81,16 @@ export function ModalInformationTarifa({ onClose, directRequestId, type }) {
                                             </tr>
                                         </thead>
                                         <tbody className='text-xs '>
+                                            {
+                                                (tarifa.materiales).map((e,index) =>
+                                            ( <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                <td className="py-4 px-6">{e.name}</td>
+                                                <td className="py-4 px-6">{e.price}</td>
+                                                <td className="py-4 px-6">{e.stock}</td>
+                                            </tr>)
+                                            )
+                                            }
 
-                                            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                                <td className="py-4 px-6">WINCHA 200</td>
-                                                <td className="py-4 px-6">23.45</td>
-                                                <td className="py-4 px-6">2</td>
-                                            </tr>
-                                            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                                <td className="py-4 px-6">WINCHA 200</td>
-                                                <td className="py-4 px-6">23.45</td>
-                                                <td className="py-4 px-6">2</td>
-                                            </tr>   <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                                <td className="py-4 px-6">WINCHA 200</td>
-                                                <td className="py-4 px-6">23.45</td>
-                                                <td className="py-4 px-6">2</td>
-                                            </tr>   <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                                <td className="py-4 px-6">WINCHA 200</td>
-                                                <td className="py-4 px-6">23.45</td>
-                                                <td className="py-4 px-6">2</td>
-                                            </tr>
                                         </tbody>
 
                                     </table>
@@ -96,17 +100,17 @@ export function ModalInformationTarifa({ onClose, directRequestId, type }) {
                         </div>
 
                         <div className="flex justify-center items-center">
-                            {type == "Technical" ? "": (<>
-                                <button onClick = { rechazedTarifa } className = 'p-2 rounded-lg mr-5 font-semibold text-white bg-gray-400'>Rechazar</button>
-                                <button onClick={acepptedTarifa} className='p-2 rounded-lg font-semibold bg-personalized text-white '>Aceptar</button>
-
+                            {type == "Technical" ? "" : (<>
+                            {e.state.id==3 || e.state.id==5 || e.state.id==2? "" : (<><button onClick={rechazedTarifa} className='p-2 rounded-lg mr-5 font-semibold text-white bg-gray-400'>Rechazar</button>
+                                <button onClick={acepptedTarifa} className='p-2 rounded-lg font-semibold bg-personalized text-white '>Aceptar</button></>)}
+                                
                             </>)}
+                        </div>
                     </div>
-                </div>
 
-            </Modal.Body >
+                </Modal.Body >
 
-        </Modal >
+            </Modal >
         </>
     );
 }

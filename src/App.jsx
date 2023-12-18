@@ -13,6 +13,9 @@ import TechnicalServicePage from './pages/Client/TechnicalServicePage';
 import RequestClientsPage from './pages/Technical/RequestClientsPage';
 import ClientPetitiosPage from './pages/Client/ClientPetitiosPage';
 import '../src/index.css'
+import HistoryRequestPage from './pages/Client/HistoryRequestPage';
+import HistoryTechnicalRequestPage from './pages/Technical/HistoryTechnicalRequestPage';
+
 
 
 function App() {
@@ -33,6 +36,9 @@ function App() {
             <Route  path="/mis-solicitudes" element={<ClientPetitiosPage/>}/>
             <Route path="/lista-reclamos" element={<TicketsPage/>}/>
             <Route  path="/ticket-reclamo" element={<TicketSupportPage/>}/>
+            <Route  path="/historial-cliente" element={<HistoryRequestPage/>}/>
+            <Route  path="/historial-tecnico" element={<HistoryTechnicalRequestPage/>}/>
+
             <Route path='/atenttion/:id' element={<AnswerSuportPage/>}/>
             <Route path='/servicio/configuracion' element={<TechnicalServicePage/>}/>
           </Route>

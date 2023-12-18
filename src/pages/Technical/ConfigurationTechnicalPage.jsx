@@ -1,6 +1,6 @@
 import imgPerfil from "../../assets/images/perfil.svg"
 import { useEffect, useState } from "react";
-import { getUserInformation } from "../../apis/Client/UserApi";
+import { getUserInformation, updateUserInformationApi } from "../../apis/Client/UserApi";
 import ModalAddProfession from "../../components/Client/ModalAddProfession";
 import { Link } from "react-router-dom";
 import ModalUpdateProfession from '../../components/Client/ModalUpdateProfession';
@@ -8,11 +8,14 @@ import { updateTechnicalInformation } from "../../apis/Client/TechnicalsApi";
 import { LayaoutDashboard } from "../../components/LayaoutDashboard";
 
 const ConfigurationTechnicalPage = () => {
-    const [technicalId,setTechnicalId] = useState();
+    const [technicalId, setTechnicalId] = useState();
     const [openModal, setOpenModal] = useState(false);
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
     const [professionUpdateModal, setProfessionUpdateModal] = useState({});
-
+    const [selectedImage, setSelectedImage] = useState({
+        file: null,
+        preview: null, // Para almacenar la URL de vista previa de la imagen
+    });
 
 
 
@@ -23,24 +26,47 @@ const ConfigurationTechnicalPage = () => {
         name: "",
         lastname: "",
         motherLastname: "",
-        birthDate:null,
-        latitude:null,
-        longitude:null
+        birthDate: null,
+        latitude: null,
+        longitude: null,
+        file: null
     });
 
-    const changeDataUserInformation = (event) =>{
-        const {name,value} = event.target;
-        setUserInformation({...userInformation,[name]:value});
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            // Crear una URL de vista previa para mostrar la imagen
+            const previewURL = URL.createObjectURL(file);
+
+            setSelectedImage({
+                ...selectedImage,
+                file: file,
+                preview: previewURL,
+            });
+        }
+    };
+
+    const changeDataUserInformation = (event) => {
+        const { name, value } = event.target;
+        setUserInformation({ ...userInformation, [name]: value });
     }
 
-    const updateUserInformation =()=>{
+    const updateUserInformation = () => {
         const accessToken = window.localStorage.getItem("access_token")
-        updateTechnicalInformation(accessToken,userInformation,technicalId)
-        .then(res=>console.log(res.data.body))
-        
+        const decodedToken = JSON.parse(atob(accessToken.split('.')[1]));
+
+        if (selectedImage.file != null) {
+            updateUserInformationApi(decodedToken.sub, accessToken, { file: selectedImage.file })
+                .then(res => console.log("exit"))
+        }
+        updateTechnicalInformation(accessToken, userInformation, technicalId)
+            .then(res => console.log(res.data.body))
+
     }
     const [professionsUser, setProfessionsUser] = useState([]);
 
+    console.log(selectedImage.file)
     //Estado dependiente de otro estado, este almacenara las professiones pero evitara que se repitan!
     const professionNameAndExperience = professionsUser.map(e => {
         return { id: e.id, profession: e.profession, experience: e.experience, availability: e.availability }
@@ -71,16 +97,18 @@ const ConfigurationTechnicalPage = () => {
         getUserInformation(decodedToken.sub, accessToken)
             .then(response => {
                 const data = response.data.body
-                console.log("user",data);
+                console.log("user", data);
+
                 let date = new Date(data.birthDate);
                 setUserInformation({
                     ...userInformation,
                     name: data.name,
                     lastname: data.lastname,
                     motherLastname: data.motherLastname,
-                    birthDate:date,
-                    latitude:data.latitude,
-                    longitude:data.longitude
+                    birthDate: date,
+                    latitude: data.latitude,
+                    longitude: data.longitude,
+                    file: data.file
                 })
 
                 setProfessionsUser(data.professionsAvailability)
@@ -93,7 +121,7 @@ const ConfigurationTechnicalPage = () => {
 
     return (
         <LayaoutDashboard>
-            <div className='h-screen bg-gray-300'  style={{ fontFamily: 'Urbanist, sans-serif' }}>
+            <div className='h-screen bg-gray-300' style={{ fontFamily: 'Urbanist, sans-serif' }}>
 
 
                 <main className="px-2 md:px-20 pt-10 pb-12 2xl:px-60">
@@ -105,8 +133,22 @@ const ConfigurationTechnicalPage = () => {
 
                         {/* PROFILE PHOTO */}
                         <div className="flex flex-row items-center gap-x-5">
-                            <img className="w-24" src={imgPerfil} alt="" />
-                            <button onClick={updateUserInformation} className="h-fit bg-personalized text-white font-semibold rounded px-2 py-1">Actualizar Datos</button>
+                            <img
+                                className="w-28 h-28 rounded-full"
+                                src={selectedImage.preview || `data:image/*;base64,${userInformation.file}`}
+                                alt=""
+                            />
+
+                            <input
+                                id="fileInput"
+                                type="file"
+                                required
+                                accept="image/*"
+                                className="rounded-md h-fit bg-personalized text-white font-semibold rounded px-2 py-1"
+                                onChange={handleFileChange}
+                                multiple={false}
+                            />
+
                         </div>
 
                         <div className="grid gap-y-2">
@@ -167,7 +209,7 @@ const ConfigurationTechnicalPage = () => {
                                             <Link to={"/servicio/configuracion"} className="ml-5 px-3 py-2 rounded bg-personalized text-white hover:bg-gray-400">Ver tus Servicios</Link>
                                             {openModal ? <ModalAddProfession technicalId={technicalId} professionsExistAlready={professionsUser} reloadComponent={() => { setRenderComponent(!renderComponent) }} open={() => setOpenModal(true)} close={() => setOpenModal(false)} /> : ""}
                                         </div>
-                                       
+
                                     </div>
                                 </div>
 
@@ -186,7 +228,7 @@ const ConfigurationTechnicalPage = () => {
                                                 </thead>
                                                 <tbody>
                                                     {
-                                                        uniqueProfessions.map((element,key) =>
+                                                        uniqueProfessions.map((element, key) =>
                                                         (<tr key={key} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                                             <td className="py-4 px-6">{element.profession.name}</td>
                                                             <td className="py-4 px-6">{element.experience.name}</td>
@@ -227,9 +269,8 @@ const ConfigurationTechnicalPage = () => {
                                 <button className="px-3 py-1 rounded border border-slate-300">
                                     <span className="font-medium text-slate-800">Cancelar</span>
                                 </button>
-                                <button className="px-3 py-1 rounded bg-personalized">
-                                    <span className="font-medium text-slate-100">Salvar</span>
-                                </button>
+                                <button onClick={updateUserInformation} className="h-fit bg-personalized text-white font-semibold rounded px-2 py-1">Confirmar Cambios</button>
+
                             </div>
 
 
@@ -246,4 +287,4 @@ const ConfigurationTechnicalPage = () => {
 };
 
 export default ConfigurationTechnicalPage
-;
+    ;

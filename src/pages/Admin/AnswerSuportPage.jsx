@@ -14,7 +14,7 @@ export function AnswerSuportPage(){
         help_desk:null,
         title: "",
         answer:"",
-        date: new Date().toISOString().split('T')[0], // Obtener la fecha actual en formato YYYY-MM-DD
+        date:  new Date().toLocaleDateString('sv-SE'), // Obtener la fecha actual en formato YYYY-MM-DD
         
     })
 
@@ -27,6 +27,7 @@ export function AnswerSuportPage(){
         issue:"",
         description:"",
         nReclamo:id,
+        date:""
     })
 
 
@@ -40,7 +41,7 @@ export function AnswerSuportPage(){
           if (response) {
             // La solicitud fue exitosa, puedes manejar la respuesta aquí
             console.log(response);
-            navigate('/supportList');
+            navigate('/lista-reclamos');
           } else {
             console.log(response.error);
           }
@@ -70,7 +71,8 @@ export function AnswerSuportPage(){
                 date_ticket:ticketData.date,
                 issue:ticketData.issue,
                 description:ticketData.description,
-                nReclamo:ticketData.id
+                nReclamo:ticketData.id,
+                date:ticketData.date
                 });
         });
         
@@ -79,7 +81,7 @@ export function AnswerSuportPage(){
             try {
                 const decodedToken = JSON.parse(atob(accessToken.split('.')[1]));
 
-                getUserInformation(decodedToken.user_id)
+                getUserInformation(decodedToken.sub)
                     .then(dataUser=>{
                         console.log("ID DEL HELP EDSK", dataUser);
 
@@ -127,7 +129,7 @@ export function AnswerSuportPage(){
                                         <h1 className="text-center mx-auto text-base font-bold flex md:col-span-5">Formulario Respuesta</h1>
                                         <div className="md:col-span-5">
                                             <label htmlFor="full_name">Titulo</label>
-                                            <input type="text" name="title" id="full_name" onChange={handleInputChange}
+                                            <input required type="text" name="title" id="full_name" onChange={handleInputChange}
                                                 className="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value={formData.title} />
                                         </div>
 
@@ -140,7 +142,7 @@ export function AnswerSuportPage(){
 
                                         <div className="md:col-span-5">
                                             <label htmlFor="address">Comentario</label>
-                                            <textarea type="text" name="answer" id="address"
+                                            <textarea  required type="text" name="answer" id="address"
                                                 className=" border mt-1 rounded px-4 w-full bg-gray-50"  rows="6" value={formData.answer} onChange={handleInputChange}/>
                                         </div>
 
@@ -155,28 +157,19 @@ export function AnswerSuportPage(){
                                         <div className="md:col-span-2">
                                             <label htmlFor="state">Fecha</label>
                                             <input type="text"  id="city"
-                                                className="h-10 block bg-gray-200 text-gray-500 border mt-1 rounded px-4 w-full bg-gray-50" value={formData.date}
+                                                className="h-10 block bg-gray-200 text-gray-500 border mt-1 rounded px-4 w-full bg-gray-50" value={staticInformation.date}
                                                 placeholder=""  readOnly/>
                                                 
                                         </div>
 
                                         <div className="md:col-span-1">
-                                            <label htmlFor="zipcode">Hora</label>
-                                            <input type="text" id="city"
-                                                className="h-10 block bg-gray-200 text-gray-500 border mt-1 rounded px-4 w-full bg-gray-50" value="12:16 PM"
-                                                placeholder="" readOnly />
+                                            <label htmlFor="state">Responder</label>
+
+                                            <button type="submit"
+                                                    className="bg-blue-500 hover:bg-blue-700 text-white  mt-1  font-bold py-2.5 px-4 rounded">Responder</button>
+                                                
                                         </div>
-
                                         
-
-                                        
-
-                                        <div className="md:col-span-5 text-right">
-                                            <div className="inline-flex items-end">
-                                                <button type="submit"
-                                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Responder</button>
-                                            </div>
-                                        </div>
 
                                     </div>
 

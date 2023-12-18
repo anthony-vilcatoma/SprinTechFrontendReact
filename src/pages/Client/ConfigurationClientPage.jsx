@@ -1,22 +1,57 @@
 import React, { useEffect, useState } from 'react'
 import { LayaoutDashboard } from '../../components/LayaoutDashboard';
 import imgPerfil from "../../assets/images/perfil.svg"
-import { getUserInformation } from '../../apis/Client/UserApi';
+import { getUserInformation, updateClientInformation, updateUserInformationApi } from '../../apis/Client/UserApi';
 
 export default function ConfigurationClientPage() {
+  const [clientId, setClientId] = useState();
   const [userInformation, setUserInformation] = useState({
     name: "",
     lastname: "",
     motherLastname: "",
     birthDate: null,
     latitude: null,
-    longitude: null
+    longitude: null,
+    file:null
   });
+
+  const [selectedImage, setSelectedImage] = useState({
+    file: null,
+    preview: null, // Para almacenar la URL de vista previa de la imagen
+  });
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Crear una URL de vista previa para mostrar la imagen
+      const previewURL = URL.createObjectURL(file);
+
+      setSelectedImage({
+        ...selectedImage,
+        file: file,
+        preview: previewURL,
+      });
+    }
+  };
+
   const [viewPassword, setViewPassword] = useState(true);
   const changeDataUserInformation = (event) => {
     const { name, value } = event.target;
     setUserInformation({ ...userInformation, [name]: value });
   }
+
+
+  const updateUserInformation = () => {
+    const accessToken = window.localStorage.getItem("access_token")
+    const decodedToken = JSON.parse(atob(accessToken.split('.')[1]));
+
+    if (selectedImage.file != null) {
+      updateUserInformationApi(decodedToken.sub, accessToken, { file: selectedImage.file })
+      .then(res => console.log("exit"))
+    }
+    updateClientInformation(accessToken, userInformation, clientId)
+        .then(res => console.log(res.data.body))
+
+}
 
   useEffect(() => {
     const accessToken = window.localStorage.getItem("access_token");
@@ -33,14 +68,13 @@ export default function ConfigurationClientPage() {
           motherLastname: data.motherLastname,
           birthDate: date,
           latitude: data.latitude,
-          longitude: data.longitude
+          longitude: data.longitude,
+          file:data.file
         })
-
-        setProfessionsUser(data.professionsAvailability)
-        setTechnicalId(data.id)
+        setClientId(data.id)
 
       })
-  },[])
+  }, [])
   return (
     <LayaoutDashboard>
       <div className='h-screen bg-gray-300' style={{ fontFamily: 'Urbanist, sans-serif' }}>
@@ -55,8 +89,22 @@ export default function ConfigurationClientPage() {
 
             {/* PROFILE PHOTO */}
             <div className="flex flex-row items-center gap-x-5">
-              <img className="w-24" src={imgPerfil} alt="" />
-              <button className="h-fit bg-personalized text-white font-semibold rounded px-2 py-1">Actualizar Datos</button>
+              <img
+                className="w-28 h-28 rounded-full"
+                src={selectedImage.preview || `data:image/*;base64,${userInformation.file}`}
+                alt=""
+              />
+
+              <input
+                id="fileInput"
+                type="file"
+                required
+                accept="image/*"
+                className="rounded-md h-fit bg-personalized text-white font-semibold rounded px-2 py-1"
+                onChange={handleFileChange}
+                multiple={false}
+              />
+
             </div>
 
             <div className="grid gap-y-2">
@@ -105,13 +153,13 @@ export default function ConfigurationClientPage() {
 
               <hr className="my-3" />
 
+
               <div className="flex justify-end gap-x-4 mb-2">
                 <button className="px-3 py-1 rounded border border-slate-300">
                   <span className="font-medium text-slate-800">Cancelar</span>
                 </button>
-                <button className="px-3 py-1 rounded bg-personalized">
-                  <span className="font-medium text-slate-100">Salvar</span>
-                </button>
+                <button onClick={updateUserInformation} className="h-fit bg-personalized text-white font-semibold rounded px-2 py-1">Confirmar Cambios</button>
+
               </div>
 
 

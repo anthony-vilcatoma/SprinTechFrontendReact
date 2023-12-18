@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { getServicesByCategorylByProfession } from '../../apis/Client/TechnicalsApi'
 import { Carousel } from 'flowbite-react';
 import TechnicalService from './TechnicalService';
+import ComentariesModal from './ComentariesModal';
 
-export default function TechnicalInformation({formData, profession, name, lastnames, birthDate, categoryServiceId, technical_id }) {
+export default function TechnicalInformation({ formData, profession, name, lastnames, birthDate, categoryServiceId, technical_id }) {
 
-    const [services,setServices] = useState([]);
+    const [comentariesModal, setStateComentariesModal] = useState(false)
+    const [services, setServices] = useState([]);
     // Convertir milisegundos a objeto Date
     let fecha = new Date(birthDate);
 
@@ -18,24 +20,24 @@ export default function TechnicalInformation({formData, profession, name, lastna
     // Verificar si el cumpleaños ya ha pasado este año
     // Si no ha pasado, restamos un año a la edad
     if (
-    fecha.getMonth() > fechaActual.getMonth() ||
-    (fecha.getMonth() === fechaActual.getMonth() && fecha.getDate() > fechaActual.getDate())
+        fecha.getMonth() > fechaActual.getMonth() ||
+        (fecha.getMonth() === fechaActual.getMonth() && fecha.getDate() > fechaActual.getDate())
     ) {
-    edad--;
+        edad--;
     }
 
-    console.log(services,"help")
+    console.log(services, "help")
     useEffect(() => {
         const accessToken = window.localStorage.getItem("access_token")
         const decodedToken = JSON.parse(atob(accessToken.split('.')[1]));
 
-        getServicesByCategorylByProfession(accessToken, profession.id, categoryServiceId,technical_id)
+        getServicesByCategorylByProfession(accessToken, profession.id, categoryServiceId, technical_id)
             .then(res => {
-                console.log("servivios",res.data.body)
+                console.log("servivios", res.data.body)
                 setServices(res.data.body)
             })
-    },[])
-    console.log("servivios",services)
+    }, [profession])
+    console.log("servivios", services)
     return (
         <div className="specialist-all  pb-5 px-8 mb-24 w-7/12  bg-white  h-fit  rounded-2xl shadow-2xl">
             <div className="w-full flex pt-6 px-6 mt-9 justify-between relative ">
@@ -57,7 +59,9 @@ export default function TechnicalInformation({formData, profession, name, lastna
                             </ul>
                         </div>
                     </div>
-                    <button className="solicitar  mt-1 flex items-center justify-center w-fit h-fit font-bold p-3 rounded-md">Ver Comentarios</button>
+                    <button onClick={() => {
+                        setStateComentariesModal(true)
+                    }} className="solicitar  mt-1 flex items-center justify-center w-fit h-fit font-bold p-3 rounded-md">Ver Comentarios</button>
 
                 </div>
 
@@ -95,7 +99,7 @@ export default function TechnicalInformation({formData, profession, name, lastna
                 <div className="service-card w-7/12 bg-gray-100 rounded-md 	h-fit pb-5  px-5 pt-3	 ">
                     <Carousel slide={false}>
                         {
-                            services.map((element)=><TechnicalService  serviceTypeAvailabilityId={element.id} formData={formData} file={element.service.file} title={element.service.name} description={element.service.description} price={element.service.price}/>
+                            services.map((element) => <TechnicalService serviceTypeAvailabilityId={element.id} formData={formData} file={element.service.file} title={element.service.name} description={element.service.description} price={element.service.price} />
                             )
                         }
                     </Carousel>
@@ -132,6 +136,10 @@ export default function TechnicalInformation({formData, profession, name, lastna
 
                 </div>
             </div>
+            {comentariesModal ? <ComentariesModal technicalId={technical_id} onClose={() => {
+                setStateComentariesModal(false)
+            }} /> : ""}
         </div>
+
     )
 }

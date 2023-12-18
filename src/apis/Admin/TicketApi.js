@@ -14,7 +14,7 @@ const getTicket = async (id) => {
 
 const getTickets = async() =>{
   try {
-    const response = await axios.get(`${API_URL}/admin/requesTicket/`);
+    const response = await axios.get(`${API_URL}/admin/requesTickets`);
     return response.data;
   } catch (error) {
     
@@ -34,7 +34,7 @@ const getUserInformation = async(id) => {
 
 const createAnswer = async (answerData) => {
   try {
-    const response = await axios.post(`${API_URL}/admin/answerTicket/`, answerData);
+    const response = await axios.post(`${API_URL}/admin/answerTicket`, answerData);
     return response;
   } catch (error) {
     throw error;

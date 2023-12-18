@@ -23,7 +23,7 @@ export function LoginFormPage() {
                 navigate('/solicitudes-recibidas')
             }
             else{
-                navigate('/atenttion/1')
+                navigate('/lista-reclamos')
             }
         }
     },[isAuthenticated]) // se ejecutará si isAuthenticated cambia
@@ -37,7 +37,7 @@ export function LoginFormPage() {
             
             // CASO CONTRARIO AUTHENTICAMOS EN DJANGO
             if (res.status !== 200){
-                const response = await fetch("http://localhost:8000/api/admin/authenticate/", {
+                const response = await fetch("http://localhost:8000/api/admin/authenticate", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -50,8 +50,6 @@ export function LoginFormPage() {
                     if(data.access_token){
                         // Guardar el token de acceso en localStorage
                         localStorage.setItem("access_token", data.access_token);
-                        // Guardar el token de actualización en localStorage
-                        localStorage.setItem("refresh_token", data.refresh_token);
                         setAuthenticated(true);
                     }
                                         
@@ -107,7 +105,7 @@ export function LoginFormPage() {
                                 name="password"
                                 id="password"
                                 placeholder="Ingresa tu contraseña"
-                                minLength="6"
+                                minLength="5"
                                 className="w-full px-4 py-3 rounded-lg bg-gray-200 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none"
                                 required
                                 value={formData.password}

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { getUserLocation } from '../../assets/js/userLocation';
 import banderita from '../../assets/images/banderita.png';
 
-export function MapComponentTechnical({ posibleLocation }) {
+export function MapComponentTechnical({ posibleLocation,type }) {
     var locateP = posibleLocation;
 
     const initializeMap = async (locate) => {
@@ -23,7 +23,7 @@ export function MapComponentTechnical({ posibleLocation }) {
             });
 
             let infowindow = new window.google.maps.InfoWindow({
-                content: (locate && locate.lat != null ? 'Ubicacion del cliente' : 'ESTA ES TU UBICACION'), // Message depending on location
+                content:   (type=="clientviewMapTechnical" ? 'Ubicacion del Tecnico': (locate && locate.lat != null ? 'Ubicacion del cliente' : 'ESTA ES TU UBICACION')), // Message depending on location)  
             });
 
             // Show info window at appropriate location

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import '../assets/css/sidebar.css'
 import logo from '../assets/images/logoUniWay.jpg'
-import { Link,  } from 'react-router-dom';
+import { Link, } from 'react-router-dom';
 export function Sidebar() {
     const token = window.localStorage.getItem("access_token");
     const decodedToken = JSON.parse(atob(token.split('.')[1]));
@@ -74,66 +74,86 @@ export function Sidebar() {
                         </li>
 
                         <ul className="menu-links">
-                            
-                            {role==1 ? (<li className="nav-link">
+
+                            {role == 1 ? (<li className="nav-link">
                                 <Link to={"/buscar-tecnico"}>
                                     <i className='bx bx-search-alt icon'></i>
                                     <span className="text nav-text">Busca tu tecnico</span>
                                 </Link>
-                            </li>) : "" }
-                            
+                            </li>) : ""}
+
                             {
-                                role==2 ? (<li className="nav-link">
-                                <Link to={"/servicio/configuracion"}>
-                                    <i className='bx bx-wallet-alt icon'></i>
-                                    <span className="text nav-text">Servicios</span>
-                                </Link>
-                            </li>) : ""
+                                role == 2 ? (<li className="nav-link">
+                                    <Link to={"/servicio/configuracion"}>
+                                        <i className='bx bx-wallet-alt icon'></i>
+                                        <span className="text nav-text">Servicios</span>
+                                    </Link>
+                                </li>) : ""
                             }
-                            
+
                             {
-                                role==2 ? (<li className="nav-link">
-                                <Link to={"/solicitudes-recibidas"}>
-                                    <i className='bx bx-briefcase-alt-2 icon' ></i>
-                                    <span className="text nav-text">Solicitudes Recibidas</span>
-                                </Link>
-                            </li>) : ""
+                                role == 2 ? (<li className="nav-link">
+                                    <Link to={"/solicitudes-recibidas"}>
+                                        <i className='bx bx-briefcase-alt-2 icon' ></i>
+                                        <span className="text nav-text">Solicitudes Recibidas</span>
+                                    </Link>
+                                </li>) : ""
                             }
-                            
-                            
+
+
                             {
-                                role==1 ? (<li className="nav-link">
-                                <Link to={"/mis-solicitudes"}>
-                                <i className='bx bx-news icon' ></i>
-                                <span className="text nav-text">Tus solicitudes</span>
-                                </Link>
-                            </li>) : ""
+                                role == 1 ? (<li className="nav-link">
+                                    <Link to={"/mis-solicitudes"}>
+                                        <i className='bx bx-news icon' ></i>
+                                        <span className="text nav-text">Tus solicitudes</span>
+                                    </Link>
+                                </li>) : ""
+                            }
+
+                            {
+                                role == 1 ? (<li className="nav-link">
+                                    <Link to={"/historial-cliente"}>
+                                    <i class='bx bx-history icon'></i>
+                                    <span className="text nav-text">Historial</span>
+                                    </Link>
+                                </li>) : ""
                             }
                             
 
-                            
-                            <li className="nav-link">
-                            <Link to={"/ticket-reclamo"}>
-                                <i className='bx bx-message-alt-error icon' ></i>
-                                <span className="text nav-text">Reclamos</span>
-                                </Link>
-                            </li>
-
-                            
                             {
-                                role==3 ? (<li className="nav-link">
-                                <Link to={"/lista-reclamos"}>
-                                    <i className='bx bx-wallet icon'></i>
-                                    <span className="text nav-text">Atender Reclamos</span>
-                                </Link>
-                            </li>) : ""
+                                role == 2 ? (<li className="nav-link">
+                                    <Link to={"/historial-tecnico"}>
+                                    <i class='bx bx-history icon'></i>
+                                    <span className="text nav-text">Historial</span>
+                                    </Link>
+                                </li>) : ""
                             }
-                            
+
+                            {
+                                role == 1 || role == 2 ? (<li className="nav-link">
+                                    <Link to={"/ticket-reclamo"}>
+                                        <i className='bx bx-message-alt-error icon' ></i>
+                                        <span className="text nav-text">Reclamos</span>
+                                    </Link>
+                                </li>) : ""
+                            }
+
+
+
+                            {
+                                role == 3 ? (<li className="nav-link">
+                                    <Link to={"/lista-reclamos"}>
+                                        <i className='bx bx-wallet icon'></i>
+                                        <span className="text nav-text">Atender Reclamos</span>
+                                    </Link>
+                                </li>) : ""
+                            }
+
                             <li className="nav-link">
-                            <Link to={"/configuracion"}>
+                                <Link to={"/configuracion"}>
                                     <i className='bx bx-cog icon' ></i>
                                     <span className="text nav-text">Configuración</span>
-                                    </Link>
+                                </Link>
                             </li>
 
                         </ul>
@@ -141,13 +161,13 @@ export function Sidebar() {
 
                     <div className="bottom-content">
                         <li className="">
-                            <a onClick={() => {
+                            <button className='w-full flex' onClick={() => {
                                 // Eliminará el token del localstorage
                                 logout()
                             }}>
                                 <i className='bx bx-log-out icon'></i>
                                 <span className="text nav-text">Logout</span>
-                            </a>
+                            </button>
                         </li>
 
                         <li className="mode">

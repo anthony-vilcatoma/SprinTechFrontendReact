@@ -1,14 +1,69 @@
 import { Modal } from 'flowbite-react';
 import { Carousel } from 'flowbite-react';
+import { useEffect, useState } from 'react';
+import { getClientInformation, getTechnicalInformation, getUserInformation } from '../../apis/Client/UserApi';
 
-export function ModalInformationProblem({ onClose, directRequest }) {
+export function ModalInformationProblem({ onClose, directRequest, type }) {
     console.log("Imprimiendo modal")
     let fechaActual = new Date(directRequest.createdAt);
     let opciones = { day: 'numeric', month: 'long', year: 'numeric' };
     let fechaEnEspañol = fechaActual.toLocaleString('es-PE', opciones);
 
+    console.log("xasdas_", directRequest)
+
+    const [userInformation, setUserInformation] = useState({
+        name: "",
+        lastname: "",
+        motherLastname: "",
+        birthDate: null,
+        file: null
+    });
     var images = directRequest.files;
-    console.log(directRequest)
+    useEffect(() => {
+        const access_token = window.localStorage.getItem("access_token")
+        if(type!=="Technical"){
+            getTechnicalInformation(directRequest.professionAvailability.technical.id, access_token)
+            .then(res => {
+                const idUser = res.data.body.user.id;
+                getUserInformation(idUser, access_token)
+                    .then(res => {
+                        const data = res.data.body;
+                        console.log(data)
+
+                        setUserInformation({
+                            ...userInformation,
+                            name: data.name,
+                            lastname: data.lastname,
+                            motherLastname: data.motherLastname,
+                            birthDate: data.birthDate,
+                            file: data.file
+                        })
+
+                    })
+            })
+        }else{
+            getClientInformation(directRequest.clientId, access_token)
+            .then(res => {
+                const idUser = res.data.body.user.id;
+                getUserInformation(idUser, access_token)
+                    .then(res => {
+                        const data = res.data.body;
+                        console.log(data)
+
+                        setUserInformation({
+                            ...userInformation,
+                            name: data.name,
+                            lastname: data.lastname,
+                            motherLastname: data.motherLastname,
+                            birthDate: data.birthDate,
+                            file: data.file
+                        })
+
+                    })
+            })
+        }
+        
+    }, [])
     return (
         <>
             <Modal show={true} onClose={onClose} size="5xl" style={{ fontFamily: 'Urbanist, sans-serif' }} className='h-fit'>
@@ -22,14 +77,25 @@ export function ModalInformationProblem({ onClose, directRequest }) {
 
 
                                     <div className="text-gray-600 ">
-                                        <p className="font-bold text-xl text-center mb-5">Información Tecnico</p>
+                                        {
+                                            type !== "Technical" ? (<><p className="font-bold text-xl text-center mb-5">Información Tecnico</p>
 
-                                        <div className="container-person mb-5  flex items-center justify-evenly">
-                                            <img className="object-cover w-32 h-32 rounded-full"
-                                                src="https://images.pexels.com/photos/5212324/pexels-photo-5212324.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260" alt="" />
+                                                <div className="container-person mb-5  flex items-center justify-evenly">
+                                                    <img className="object-cover w-32 h-32 rounded-full"
+                                                        src={`data:image/*;base64,${userInformation.file}`} alt="" />
 
-                                        </div>
-                                        <p className='text-center font-semibold'>Anthony Vilcatoma Palacios</p>
+                                                </div>
+                                                <p className='text-center font-semibold'>{userInformation.name} {userInformation.lastname}  {userInformation.motherLastname}</p></>) : (<>
+                                                    <p className="font-bold text-xl text-center mb-5">Información Cliente</p>
+
+                                                    <div className="container-person mb-5  flex items-center justify-evenly">
+                                                        <img className="object-cover w-32 h-32 rounded-full"
+                                                            src={`data:image/*;base64,${userInformation.file}`} alt="" />
+
+                                                    </div>
+                                                    <p className='text-center font-semibold'>{userInformation.name} {userInformation.lastname} {userInformation.motherLastname}</p></>)
+                                        }
+
                                     </div>
                                 </div>
                             </div>
@@ -44,7 +110,7 @@ export function ModalInformationProblem({ onClose, directRequest }) {
 
                                         <div className="container-person mb-2  flex items-center justify-evenly">
                                             <Carousel className='block h-52 w-11/12 rounded-2xl ' slide={false}>
-                                                {images.map((e,index) =>
+                                                {images.map((e, index) =>
                                                 (
                                                     <img key={index} className=' object-cover	 rounded-md h-full w-full' src={`data:${e.contentType};base64,${e.file}`} alt="" />
                                                 )
@@ -108,32 +174,32 @@ export function ModalInformationProblem({ onClose, directRequest }) {
 
 
                                         <div className=" mt-5 w-full">
-                                        <p className='font-bold text-base mb-3'>INFORMACIÓN DEL SERVICIO SOLICITADO</p>
-                                        {
-                                            directRequest.serviceTypeAvailabilityDto ? <><div className="p-4 bg-white shadow-lg rounded-lg">
-                                            <div className="flex justify-between">
-                                                <p className='font-bold'>{directRequest.serviceTypeAvailabilityDto.service.name}</p>
-                                                <div className="text-white bg-personalized rounded-lg p-1.5">{directRequest.categoryService.name}</div>
-                                            </div>
-                                            <p className='mt-1 w-11/12 text-gray-600 text-sm mb-2'>{directRequest.serviceTypeAvailabilityDto.service.description}</p>
-                                            <p className='font-bold'>S/ {directRequest.serviceTypeAvailabilityDto.service.price}</p>
-                                        </div></> : <>
-                                        
-                                                <h1>NO ESCOGIO NINGUN SERVICIO </h1>
-                                        
-                                        </>
-                                        }
-                                        
-                                        
-                                            
-                                            
+                                            <p className='font-bold text-base mb-3'>INFORMACIÓN DEL SERVICIO SOLICITADO</p>
+                                            {
+                                                directRequest.serviceTypeAvailabilityDto ? <><div className="p-4 bg-white shadow-lg rounded-lg">
+                                                    <div className="flex justify-between">
+                                                        <p className='font-bold'>{directRequest.serviceTypeAvailabilityDto.service.name}</p>
+                                                        <div className="text-white bg-personalized rounded-lg p-1.5">{directRequest.categoryService.name}</div>
+                                                    </div>
+                                                    <p className='mt-1 w-11/12 text-gray-600 text-sm mb-2'>{directRequest.serviceTypeAvailabilityDto.service.description}</p>
+                                                    <p className='font-bold'>S/ {directRequest.serviceTypeAvailabilityDto.service.price}</p>
+                                                </div></> : <>
+
+                                                    <h1>NO ESCOGIO NINGUN SERVICIO </h1>
+
+                                                </>
+                                            }
+
+
+
+
                                         </div>
 
 
 
 
 
-                                
+
 
 
 

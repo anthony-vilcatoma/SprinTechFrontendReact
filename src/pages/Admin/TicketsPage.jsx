@@ -37,8 +37,9 @@ export function TicketsPage() {
                                 </tr>
                             </thead>
                             <tbody className="bg-white">
-                                {tickets.map((ticket) => (
+                                {tickets.map((ticket,index) => (
                                     <TicketOne
+                                        key={index}
                                         id={ticket.id}
                                         name={ticket.user.name}
                                         lastnames={ticket.user.fatherLastname}
