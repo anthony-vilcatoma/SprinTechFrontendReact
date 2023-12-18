@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { Modal } from 'flowbite-react';
 import { createReview } from '../../apis/Client/Review';
+import { getUserInformation } from '../../apis/Client/UserApi';
 
 export default function ReseñaModal({ open, onClose,directRequest,cancel,showIsPending,showInProcess }) {
     const technicalId= directRequest.professionAvailability.technical.id;
     const clientId = directRequest.clientId;
+
+    const[staticImg,setStaticImg] = useState();
     const handleRatingChange = (value) => {
       setFormData({...formData,numberStars:value});
     };
-  
     const [formData, setFormData] = useState({
         technicalId: technicalId,
         clientId: clientId,
@@ -31,6 +33,11 @@ export default function ReseñaModal({ open, onClose,directRequest,cancel,showIs
         .then(res=>showInProcess())
     }
 
+    useEffect(()=>{
+        const access_token = window.localStorage.getItem("access_token")
+        getUserInformation(directRequest.professionAvailability.technical.user.id,access_token)
+        .then(res=>setStaticImg(res.data.body.file))
+    })
     return (
         <Modal show={true} onClose={open} size={"md"} style={{ fontFamily: 'Urbanist, sans-serif' }}>
             <Modal.Body className="relative flex flex-col justify-center items-center">
@@ -40,9 +47,9 @@ export default function ReseñaModal({ open, onClose,directRequest,cancel,showIs
                     <div className="flex flex-col ">
                         <div className="text-gray-600 ">
 
-                            <div className="container-person mb-5  flex items-center justify-evenly">
+                            <div className="container-person my-5  h-fit flex items-center justify-evenly">
                                 <img className="object-cover w-32 h-32 rounded-full"
-                                    alt="" />
+                                    alt="" src={`data:image/*;base64,${staticImg}`} />
 
                             </div>
                             <p className='text-center font-semibold mb-5'>Anthony Vilcatoma Palacios</p>

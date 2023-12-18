@@ -93,7 +93,7 @@ export default function TechnicalModalService({ open, close, professionId,render
                             name='categoryServiceId'
                             className="   bg-gray-200 mb-5 p-2 block w-full border-gray-200 rounded-md text-base 	
                             focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400   ">
-                            <option disabled value="defualt">Categoria</option>
+                            <option disabled value="default">Categoria</option>
                             {
                                 categoriesService.map((e,index) => <option key={index} value={e.id}>{e.name}</option>)
                             }

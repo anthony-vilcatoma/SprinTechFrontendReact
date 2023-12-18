@@ -266,7 +266,7 @@ export function ServicePage() {
 
 
 
-
+    console.log("tecniuc" ,technicals)
 
     return (
         <LayaoutDashboard>
@@ -414,7 +414,7 @@ export function ServicePage() {
                         title: formValues.title,
                         description: formValues.description,
                         imageUrls: formValues.images}}
-                      technical_id={technicalInformation.technical_id} profession={technicalInformation.profession} name={technicalInformation.name} lastnames={technicalInformation.lastnames} birthDate={technicalInformation.birthDate} categoryServiceId={categoryService} />)}
+                      technical_id={technicalInformation.technical_id}  userId={technicalInformation.userId} profession={technicalInformation.profession} name={technicalInformation.name} lastnames={technicalInformation.lastnames} birthDate={technicalInformation.birthDate} categoryServiceId={categoryService} />)}
 
                     <div className="listadoespecialistas w-4/12 overflow-y-scroll	">
 
@@ -428,7 +428,8 @@ export function ServicePage() {
                                     technical_id: opcion.id,
                                     name: opcion.name,
                                     lastnames: opcion.lastname + " " + opcion.motherLastname, birthDate: opcion.birthDate,
-                                    profession: opcion.professionAvailability.profession
+                                    profession: opcion.professionAvailability.profession,
+                                    userId:opcion.user.id
                                 };
                                 setTechnicalInformation(info)
                                 setLoadInformation(false)

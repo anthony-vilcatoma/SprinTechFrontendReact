@@ -3,9 +3,11 @@ import { getServicesByCategorylByProfession } from '../../apis/Client/Technicals
 import { Carousel } from 'flowbite-react';
 import TechnicalService from './TechnicalService';
 import ComentariesModal from './ComentariesModal';
+import { getTechnicalInformation, getUserInformation } from '../../apis/Client/UserApi';
 
-export default function TechnicalInformation({ formData, profession, name, lastnames, birthDate, categoryServiceId, technical_id }) {
+export default function TechnicalInformation({ formData, profession, name, lastnames, birthDate, categoryServiceId, technical_id ,userId}) {
 
+    const[staticImg,setStaticImg] = useState();
     const [comentariesModal, setStateComentariesModal] = useState(false)
     const [services, setServices] = useState([]);
     // Convertir milisegundos a objeto Date
@@ -36,6 +38,9 @@ export default function TechnicalInformation({ formData, profession, name, lastn
                 console.log("servivios", res.data.body)
                 setServices(res.data.body)
             })
+
+        getUserInformation(userId,accessToken)
+        .then(res=>setStaticImg(res.data.body.file))
     }, [profession])
     console.log("servivios", services)
     return (
@@ -44,8 +49,8 @@ export default function TechnicalInformation({ formData, profession, name, lastn
                 <div className="flex flex-col w-8/12">
                     <div className="flex w-full">
                         <div className="w-44 h-44  rounded-full">
-                            <img src="https://media.licdn.com/dms/image/D4E03AQGL3n6z72AIWw/profile-displayphoto-shrink_400_400/0/1672936799998?e=1703116800&v=beta&t=IrO6HtIhjunq9u1PPhN_kWXVvML7YS6us2AuhP0vCFU"
-                                width="100%" height="100%" className="rounded-full" />
+                            <img src={`data:image/*;base64,${staticImg}`}
+                                 className="rounded-full w-full h-full" />
                         </div>
                         <div className="information w-6/12 pt-6">
 

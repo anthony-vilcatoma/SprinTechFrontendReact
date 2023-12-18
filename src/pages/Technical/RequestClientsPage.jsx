@@ -63,6 +63,15 @@ export default function RequestClientsPage() {
     if (!workingStatus) {
       return;
     }
+    const accessToken = localStorage.getItem("access_token");
+    getUserLocation()
+          .then((data) => {
+            updateTechnicalUbication(accessToken, { latitude: data.lat, longitude: data.lng }, technicalId);
+          })
+          .catch((error) => {
+            console.error('Error al obtener la ubicación:', error);
+          });
+
 
     const intervalId = setInterval(() => {
       const accessToken = localStorage.getItem("access_token");
@@ -77,7 +86,7 @@ export default function RequestClientsPage() {
             console.error('Error al obtener la ubicación:', error);
           });
       }
-    }, 60000);
+    }, 15000);
 
     // Limpieza del intervalo cuando el componente se desmonte
     return () => clearInterval(intervalId);
