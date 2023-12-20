@@ -60,7 +60,7 @@ export default function ClientPetitiosPage() {
                     <button className='bg-blue-400 text-white p-2 flex rounded-lg justify-center items-center' onClick={showAllRequestInPending}>Pendientes</button>
                 </div>
             </div>
-            <div className="w-6/12  flex flex-col gap-y-7 justify-between mx-auto py-5 bg-white shadow-personalized rounded-2xl px-4">
+            <div className="w-7/12  flex flex-col gap-y-7 justify-between mx-auto py-5 bg-white shadow-personalized rounded-2xl px-4">
                 {directRequestAll.map((e,index) => (
 
                     <ProblemClientComponent    showIsPending={()=>{

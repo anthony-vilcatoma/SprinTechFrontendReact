@@ -64,7 +64,7 @@ export const ProblemClientComponent = ({ renderComponent, e, typeModal, setUbica
                     <div id="head-card" className="flex flex-row justify-between gap-x-4">
                         <div>
                             <h2 className="text-lg font-medium">{e.title}</h2>
-                            <p className="text-sm w-8/12">{e.description}.</p>
+                            <p className="text-sm w-9/12">{e.description}.</p>
                         </div>
                         <div>
                             {typeModal == "Technical" && e.stateInvoice == 1 ? (
